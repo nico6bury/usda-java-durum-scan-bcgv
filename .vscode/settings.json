@@ -1,0 +1,24 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "libs/flatlaf-3.0.jar",
+        "libs/morena.jar",
+        "libs/morena_license.jar",
+        "libs/morena_windows.jar",
+        "libs/ij-1.54f.jar",
+        "libs/commons-math3-3.6.1.jar"
+    ],
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "C:\\Program Files\\Java\\jdk-17.0.1"
+        },
+        {
+            "name": "JavaSE-1.8",
+            "path": "C:\\Users\\nicholas.sixbury\\Documents\\Alternative Java Installation\\jre-8u51-windows-x32",
+            "default": true
+        }
+    ]
+}
