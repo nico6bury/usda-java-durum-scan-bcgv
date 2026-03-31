@@ -14,8 +14,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import IJM.IJProcess;
-
 /**
  * This class is meant to be used for scanning images with an EPSON scanner for image processing.
  * @author Nicholas.Sixbury
@@ -150,7 +148,7 @@ public class Scan {
     public static Result<File> getBaseScanDir(String filename, boolean use_filename) {
         String jar_location;
         try {
-            jar_location = new File(IJProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString();
+            jar_location = new File(Scan.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString();
             String output_folder_storage = jar_location + File.separator + Constants.SCANNED_IMAGES_FOLDER_NAME;
             File output_folder_storage_file = new File(output_folder_storage);
             if (!output_folder_storage_file.exists()) {

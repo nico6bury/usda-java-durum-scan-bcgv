@@ -111,58 +111,6 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Threshold"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-              <FontInfo relative="true">
-                <Font component="jMenu1" property="font" relativeSize="true" size="2"/>
-              </FontInfo>
-            </Property>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="uxSetThresholdMenuBtn">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-                  <FontInfo relative="true">
-                    <Font component="uxSetThresholdMenuBtn" property="font" relativeSize="true" size="2"/>
-                  </FontInfo>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Set Threshold"/>
-                <Property name="toolTipText" type="java.lang.String" value="Allows you to set a threshold for image processing."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxSetThresholdMenuBtnActionPerformed"/>
-              </Events>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Area Flag"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-              <FontInfo relative="true">
-                <Font component="jMenu2" property="font" relativeSize="true" size="2"/>
-              </FontInfo>
-            </Property>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="uxSetAreaFlagMenuBtn">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-                  <FontInfo relative="true">
-                    <Font component="uxSetAreaFlagMenuBtn" property="font" relativeSize="true" size="2"/>
-                  </FontInfo>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Set %Area Flags"/>
-                <Property name="toolTipText" type="java.lang.String" value="Allows you to set thresholds for which average %area will be flagged."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxSetAreaFlagMenuBtnActionPerformed"/>
-              </Events>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
       </SubComponents>
     </Menu>
   </NonVisualComponents>

@@ -75,6 +75,18 @@ public class ProcessingConfig implements ConfigStore {
     public boolean chalkChalkThresh_B_Pass = true;
     public boolean chalkChalkThreshFlipThreshold = false;
     
+    public String phase1Measurements = "area centroid bounding shape feret's redirect=None decimal=2";
+	public String phase1ParticlesParam = "size=1000-75000 circularity=0.05-1.00 show=Masks exclude include add";
+
+	public String phase2Measurements = "area centroid perimeter bounding fit shape feret's add redirect=None decimal=2";
+	public String phase2ParticlesParam = "size=150-6000 circularity=0.2-1.00 show[Overlay Masks] clear composite add";
+	
+    public String phase3Measurements = "area centroid perimeter bounding fit shape feret's add redirect=None decimal=2";
+	public String phase3ParticlesParam = "size=150-6000 circularity=0.2-1.00 show[Overlay Masks] clear composite add";
+	
+    public String chalkChalkMeasurements = "area centroid perimeter fit shape redirect=None decimal=2";
+	public String chalkChalkParam = "size=20-10000 circularity=0.1-1.00 show=[Overlay Masks] display";
+
     public SimpleResult<String> readConfig() {
         return ConfigScribe.readConfig(this);
     }//end readConfig()

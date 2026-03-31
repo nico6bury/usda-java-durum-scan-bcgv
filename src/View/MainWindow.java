@@ -4,6 +4,9 @@
  */
 package View;
 
+import Config.OutputConfig;
+import Config.ProcessingConfig;
+import Config.ScanConfig;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -27,17 +30,12 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import IJM.IJProcess;
-import IJM.SumResult;
-import IJM.SumResult.LeftOrRight;
 import Scan.Scan;
-import Utils.ConfigScribe;
-import Utils.ConfigStoreC;
-import Utils.ConfigStoreH;
+import SimpleResult.SimpleResult;
 import Utils.Constants;
 import Utils.Result;
 import Utils.Result.ResultType;
 import ij.IJ;
-import javafx.util.Pair;
 
 /**
  *
@@ -60,24 +58,15 @@ public class MainWindow extends javax.swing.JFrame {
     // where displayed image was last selected from
     private LastSelectedFrom lastSelectedFrom = LastSelectedFrom.NoSelection;
     // dialog boxes we can re-use
-    private AreaFlagDialog areaFlagDialog = new AreaFlagDialog(this, true);
-    private ThresholdDialog thresholdDialog = new ThresholdDialog(this, true);
+    // private AreaFlagDialog areaFlagDialog = new AreaFlagDialog(this, true);
+    // private ThresholdDialog thresholdDialog = new ThresholdDialog(this, true);
     // progress bar for imagej processing
     ProgressMonitor progressMonitor;
     // task for background work
-    IJTask ijTask = new IJTask(imageQueue, ijProcess);
-    /**
-     * Class for handling serializing and deserialization of config options.
-     */
-    ConfigScribe config_scribe = new ConfigScribe();
-    /**
-     * Class for storing the settings of certain human-readable config values.
-     */
-    ConfigStoreH config_store_h = new ConfigStoreH();
-    /**
-     * Class for storing the settings of certain non-human-readable config values.
-     */
-    ConfigStoreC config_store_c = new ConfigStoreC();
+    IJTask ijTask = new IJTask(imageQueue);
+    ScanConfig scanConfig = new ScanConfig();
+    OutputConfig outputConfig = new OutputConfig();
+    ProcessingConfig procConfig = new ProcessingConfig();
 
     /**
      * enum added for use in keeping track of whether displayed image was selected from QueueList or OutputTable
@@ -92,6 +81,11 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
+        // read config files
+        scanConfig.readConfig();
+        outputConfig.readConfig();
+        procConfig.readConfig();
+        
         // try and figure out if we should use dark mode
         boolean useDarkMode = false;
         // set the application theme / look and feel
@@ -148,21 +142,6 @@ public class MainWindow extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         uxOutputTable.setDefaultRenderer(String.class, centerRenderer);
-
-        // read config files
-        Result<Pair<ConfigStoreH, ConfigStoreC>> config_result =  config_scribe.read_config();
-        if (config_result.isOk()) {
-            this.config_store_h = config_result.getValue().getKey();
-            this.config_store_c = config_result.getValue().getValue();
-            // update dialog based on config
-            this.thresholdDialog.thresholdToReturn = this.config_store_h.proc_threshold;
-            this.areaFlagDialog.firstFlag = this.config_store_h.area_threshold_lower;
-            this.areaFlagDialog.secondFlag = this.config_store_h.area_threshold_upper;
-        }//end if we can read from config
-        else {
-            showGenericExceptionMessage(config_result.getError());
-            JOptionPane.showMessageDialog(this, "Something went wrong while reading the config file. All settings have reverted to default.");
-        }//end else something went wrong
     }//end MainWindow constructor
 
     /**
@@ -225,10 +204,6 @@ public class MainWindow extends javax.swing.JFrame {
         uxRunMenu = new javax.swing.JMenu();
         uxScanBtn = new javax.swing.JMenuItem();
         uxIjBtn = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        uxSetThresholdMenuBtn = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        uxSetAreaFlagMenuBtn = new javax.swing.JMenuItem();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -667,36 +642,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuBar1.add(uxRunMenu);
 
-        jMenu1.setText("Threshold");
-        jMenu1.setFont(jMenu1.getFont().deriveFont(jMenu1.getFont().getSize()+2f));
-
-        uxSetThresholdMenuBtn.setFont(uxSetThresholdMenuBtn.getFont().deriveFont(uxSetThresholdMenuBtn.getFont().getSize()+2f));
-        uxSetThresholdMenuBtn.setText("Set Threshold");
-        uxSetThresholdMenuBtn.setToolTipText("Allows you to set a threshold for image processing.");
-        uxSetThresholdMenuBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uxSetThresholdMenuBtnActionPerformed(evt);
-            }
-        });
-        jMenu1.add(uxSetThresholdMenuBtn);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Area Flag");
-        jMenu2.setFont(jMenu2.getFont().deriveFont(jMenu2.getFont().getSize()+2f));
-
-        uxSetAreaFlagMenuBtn.setFont(uxSetAreaFlagMenuBtn.getFont().deriveFont(uxSetAreaFlagMenuBtn.getFont().getSize()+2f));
-        uxSetAreaFlagMenuBtn.setText("Set %Area Flags");
-        uxSetAreaFlagMenuBtn.setToolTipText("Allows you to set thresholds for which average %area will be flagged.");
-        uxSetAreaFlagMenuBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uxSetAreaFlagMenuBtnActionPerformed(evt);
-            }
-        });
-        jMenu2.add(uxSetAreaFlagMenuBtn);
-
-        jMenuBar1.add(jMenu2);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -786,7 +731,7 @@ public class MainWindow extends javax.swing.JFrame {
     private Result<File> PerformScan() {
         System.out.println("You clicked the \"Scan\" button.");
         // try to set scanner settings
-        Result<ResultType> setScanSettingResult = scan.setScanSettings(this.config_store_h);
+        Result<ResultType> setScanSettingResult = scan.setScanSettings(this.scanConfig);
         if (setScanSettingResult.isErr()) {
             showGenericExceptionMessage(setScanSettingResult.getError());
             // reset scan to null
@@ -796,12 +741,12 @@ public class MainWindow extends javax.swing.JFrame {
         Result<String> scanResult = scan.runScanner(uxOverwriteName.getText(), !uxShouldOverwriteName.isSelected());
         if (scanResult.isOk()) {
             String result = scanResult.getValue();
-            if (config_store_h.unsharp_skip == true) {
+            if (scanConfig.unsharp_skip == true) {
                 lastScannedFile = new File(result);
                 return new Result<File>(lastScannedFile);
             }//end if we should just skip the unsharp process
             else {
-                Result<String> unsharpResult = IJProcess.doUnsharpCorrection(result, config_store_h.unsharp_sigma, config_store_h.unsharp_weight, config_store_h.unsharp_rename);
+                SimpleResult<String> unsharpResult = IJProcess.doUnsharpCorrection(result, scanConfig.unsharp_sigma, scanConfig.unsharp_weight, scanConfig.unsharp_rename);
                 if (unsharpResult.isOk()) {
                     lastScannedFile = new File(unsharpResult.getValue());
                     return new Result<File>(lastScannedFile);
@@ -968,64 +913,45 @@ public class MainWindow extends javax.swing.JFrame {
         return new ImageIcon(new ImageIcon(buf_img).getImage().getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT));
     }//end scaleImageToIcon(imageFile)
 
-    /**
-     * Updates the output table with the provided results from image processing.
-     * Working with JTables is kinda jank, so column ordering is hardcoded here.
-     * This is also where the string formatting for numeric columns in the table is handled.
-     * @param groupedResults A grouped list of SumResults, likely generated by passing IJM.IJProcess.lastProcResult to IJM.SumResult.GroupResultsByFile().
-     */
-    private void updateOutputTable(List<List<SumResult>> groupedResults) {
-        DefaultTableModel this_table_model = (DefaultTableModel)uxOutputTable.getModel();
-        for (List<SumResult> resultGroup : groupedResults) {
-            // check that we have valid left and right results
-            SumResult left = null;
-            SumResult right = null;
-            for (SumResult tempResult : resultGroup) {
-                if (tempResult.leftOrRight == LeftOrRight.Left) {left = tempResult;}
-                else if (tempResult.leftOrRight == LeftOrRight.Right) {right = tempResult;}
-            }//end categorizing all of result group
-            if (left != null && right != null) {
-                double this_avg_l = (left.l_mean + right.l_mean) / 2.0;
-                double this_avg_area = (left.percent_area + right.percent_area) / 2.0;
-                Object[] this_row = new Object[11];
-                this_row[0] = left.file.getName();
-                this_row[1] = left.threshold;
-                this_row[2] = left.count;
-                this_row[3] = right.count;
-                this_row[4] = String.format("%3.1f", left.l_mean);
-                this_row[5] = String.format("%3.1f", right.l_mean);
-                this_row[6] = String.format("%3.1f", this_avg_l);
-                this_row[7] = String.format("%4.3f", left.percent_area);
-                this_row[8] = String.format("%4.3f", right.percent_area);
-                this_row[9] = String.format("%4.3f", this_avg_area);
-                if (this_avg_area > areaFlagDialog.firstFlag) {this_row[10] = "x";}
-                if (this_avg_area > areaFlagDialog.secondFlag) {this_row[10] = "xx";}
-                this_table_model.addRow(this_row);
-            }//end if we have proper left and right result
-            else {
-                // TODO: Handle exception case
-            }//end else we need to figure out what to do
-        }//end looping over each result group
-    }//end updateOutputTable(groupedResults)
-
-    /**
-     * Shows the dialog for changing area flag thresholds. 
-     */
-    private void uxSetAreaFlagMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxSetAreaFlagMenuBtnActionPerformed
-        areaFlagDialog.setVisible(true);
-        this.config_store_h.area_threshold_lower = areaFlagDialog.firstFlag;
-        this.config_store_h.area_threshold_upper = areaFlagDialog.secondFlag;
-        this.config_scribe.write_config(this.config_store_h, this.config_store_c);
-    }//GEN-LAST:event_uxSetAreaFlagMenuBtnActionPerformed
-
-    /**
-     * Shows the dialog for changing the image processing threshold. 
-     */
-    private void uxSetThresholdMenuBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxSetThresholdMenuBtnActionPerformed
-        thresholdDialog.setVisible(true);
-        this.config_store_h.proc_threshold = thresholdDialog.thresholdToReturn;
-        this.config_scribe.write_config(this.config_store_h, this.config_store_c);
-    }//GEN-LAST:event_uxSetThresholdMenuBtnActionPerformed
+    // /**
+    //  * Updates the output table with the provided results from image processing.
+    //  * Working with JTables is kinda jank, so column ordering is hardcoded here.
+    //  * This is also where the string formatting for numeric columns in the table is handled.
+    //  * @param groupedResults A grouped list of SumResults, likely generated by passing IJM.IJProcess.lastProcResult to IJM.SumResult.GroupResultsByFile().
+    //  */
+    // private void updateOutputTable(List<List<SumResult>> groupedResults) {
+    //     DefaultTableModel this_table_model = (DefaultTableModel)uxOutputTable.getModel();
+    //     for (List<SumResult> resultGroup : groupedResults) {
+    //         // check that we have valid left and right results
+    //         SumResult left = null;
+    //         SumResult right = null;
+    //         for (SumResult tempResult : resultGroup) {
+    //             if (tempResult.leftOrRight == LeftOrRight.Left) {left = tempResult;}
+    //             else if (tempResult.leftOrRight == LeftOrRight.Right) {right = tempResult;}
+    //         }//end categorizing all of result group
+    //         if (left != null && right != null) {
+    //             double this_avg_l = (left.l_mean + right.l_mean) / 2.0;
+    //             double this_avg_area = (left.percent_area + right.percent_area) / 2.0;
+    //             Object[] this_row = new Object[11];
+    //             this_row[0] = left.file.getName();
+    //             this_row[1] = left.threshold;
+    //             this_row[2] = left.count;
+    //             this_row[3] = right.count;
+    //             this_row[4] = String.format("%3.1f", left.l_mean);
+    //             this_row[5] = String.format("%3.1f", right.l_mean);
+    //             this_row[6] = String.format("%3.1f", this_avg_l);
+    //             this_row[7] = String.format("%4.3f", left.percent_area);
+    //             this_row[8] = String.format("%4.3f", right.percent_area);
+    //             this_row[9] = String.format("%4.3f", this_avg_area);
+    //             if (this_avg_area > areaFlagDialog.firstFlag) {this_row[10] = "x";}
+    //             if (this_avg_area > areaFlagDialog.secondFlag) {this_row[10] = "xx";}
+    //             this_table_model.addRow(this_row);
+    //         }//end if we have proper left and right result
+    //         else {
+    //             // TODO: Handle exception case
+    //         }//end else we need to figure out what to do
+    //     }//end looping over each result group
+    // }//end updateOutputTable(groupedResults)
 
     /**
      * Clears the output table
@@ -1076,7 +1002,7 @@ public class MainWindow extends javax.swing.JFrame {
                 // tell user we're about to do processing
                 // JOptionPane.showMessageDialog(this, "Please wait. Your images will now be processed.");
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                ijProcess.th01 = thresholdDialog.thresholdToReturn;
+                // ijProcess.th01 = thresholdDialog.thresholdToReturn;
                 // set up progress bar
                 progressMonitor = new ProgressMonitor(this, "Progress!", "", 0, 5);
                 progressMonitor.setProgress(3);
@@ -1085,10 +1011,10 @@ public class MainWindow extends javax.swing.JFrame {
                 // actually run the imagej stuff
 
                 // roll over area flag stuff to the processing
-                IJProcess.lower_flag_thresh = areaFlagDialog.firstFlag;
-                IJProcess.upper_flag_thresh = areaFlagDialog.secondFlag;
+                // IJProcess.lower_flag_thresh = areaFlagDialog.firstFlag;
+                // IJProcess.upper_flag_thresh = areaFlagDialog.secondFlag;
 
-                Result<String> outputData = ijTask.doInBackground();
+                SimpleResult<String> outputData = ijTask.doInBackground();
                 if (ijTask.isDone()) {
                     setCursor(Cursor.getDefaultCursor());
                 }//end if the task is done
@@ -1102,9 +1028,9 @@ public class MainWindow extends javax.swing.JFrame {
                 }//end if we couldn't get output data
                 int prev_row_count = uxOutputTable.getRowCount();
                 // group together SumResults which came from the same file path
-                List<List<SumResult>> groupedResults = SumResult.groupResultsByFile(ijProcess.lastProcResult);
+                // List<List<SumResult>> groupedResults = SumResult.groupResultsByFile(ijProcess.lastProcResult);
                 // process sumResults into string columns
-                updateOutputTable(groupedResults);
+                // updateOutputTable(groupedResults);
                 // clear queue now that it's been processed
                 imageQueue.clear();
                 UpdateQueueList();
@@ -1191,8 +1117,6 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
@@ -1233,8 +1157,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton uxScanBigBtn;
     private javax.swing.JMenuItem uxScanBtn;
     private javax.swing.JButton uxScanQueueBtn;
-    private javax.swing.JMenuItem uxSetAreaFlagMenuBtn;
-    private javax.swing.JMenuItem uxSetThresholdMenuBtn;
     private javax.swing.JCheckBox uxShouldOverwriteName;
     private javax.swing.JTextArea uxStatusTxt;
     private javax.swing.JTextArea uxTitleBlockTxt;

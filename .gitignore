@@ -2,6 +2,7 @@
 /bin
 /output-folder
 /scanned-images
+/data
 
 # Output jar
 usda-java-durum-scan.jar

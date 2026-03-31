@@ -19,16 +19,19 @@ public class OutputConfig implements ConfigStore {
     
     public boolean save_imgs_gen = true;
     public boolean save_roi_points = false;
-    public boolean save_particle_resultsa = false;
+    public boolean save_particle_results = false;
     public boolean print_kern_estimates = false;
     public boolean print_roi_counts = false;
     public boolean print_singleton_counts = true;
     public boolean rotate_singleton_kern_imgs = true;
     public boolean rotate_merged_kern_imgs = false;
-    public boolean save_chalk_imgages = false;
+    public boolean save_chalk_images = false;
     public int excel_log_rep_grouping = 2;
     public boolean excel_log_shorten_hyphenated_names = true;
-    
+    public int avg_kernel_area = 2304;
+    public String path_baseCOMMENT = "This setting is ignored and overwritten by the program. The value saved here is the directory used as a base by the program when outputting files.";
+    public String path_base = "";
+
     public SimpleResult<String> readConfig() {
         return ConfigScribe.readConfig(this);
     }//end readConfig()

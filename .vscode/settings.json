@@ -8,16 +8,15 @@
         "libs/morena_license.jar",
         "libs/morena_windows.jar",
         "libs/ij-1.54f.jar",
-        "libs/commons-math3-3.6.1.jar"
+        "libs/commons-math3-3.6.1.jar",
+        "libs/fastexcel-0.20.0.jar",
+        "libs/java-config-scribe_v1.0.0_standalone.jar",
+        "libs/opczip-1.2.0.jar"
     ],
     "java.configuration.runtimes": [
         {
-            "name": "JavaSE-17",
-            "path": "C:\\Program Files\\Java\\jdk-17.0.1"
-        },
-        {
-            "name": "JavaSE-1.8",
-            "path": "C:\\Users\\nicholas.sixbury\\Documents\\Alternative Java Installation\\jre-8u51-windows-x32",
+            "name": "JavaSE-19",
+            "path": "C:\\Users\\Nicholas.Sixbury\\Documents\\Alternative Java Installation\\OpenJDK19U-jdk_x86-32_windows_hotspot_19.0.2_7\\jdk-19.0.2+7",
             "default": true
         }
     ]

@@ -6,24 +6,23 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import IJM.IJProcess;
-import Utils.Result;
+import IJM.Durum;
+import SimpleResult.SimpleResult;
 
-public class IJTask extends SwingWorker<Result<String>,Exception> {
+public class IJTask extends SwingWorker<SimpleResult<String>,Exception> {
 
     public List<File> imageQueue = new ArrayList<File>();
-    public IJProcess ijProcess = new IJProcess();
 
     /**
      * Make sure to set imageQueue and ijProcess props before calling this.
      */
     @Override
-    protected Result<String> doInBackground() throws Exception {
-        return ijProcess.runMacro(imageQueue);
+    protected SimpleResult<String> doInBackground() throws Exception {
+        Durum.doProcessing(imageQueue);
+        return new SimpleResult<String>("null");
     }//end doInBackground()
 
-    public IJTask(List<File> imageQueue, IJProcess ijProcess) {
+    public IJTask(List<File> imageQueue) {
         this.imageQueue = imageQueue;
-        this.ijProcess = ijProcess;
     }//end 2-arg constructor
 }//end class IJTask
