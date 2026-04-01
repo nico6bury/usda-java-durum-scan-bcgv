@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -104,33 +105,9 @@ public class Durum {
 			wb.setGlobalDefaultFont("Calibri", 12);
 
 			Worksheet log = wb.newWorksheet("log");
-			log.setZoom(200);
-			
-			// styling
-			log.range(0,0,15,15).style().horizontalAlignment("center").set();
-			log.range(1,5,15,15).style().format("0.0%").set();
-			log.range(1,1,15,1).style().format("m/d/yyyy").set();
-			log.range(1,2,15,2).style().format("h:mm:ss AM/PM").set();
-			
-			log.width(1,11);
-			log.width(2,11);
-			log.width(3,11.7);
-			log.width(4,4.5);
-			log.width(5,8.4);
-			log.width(6,8.4);
-			log.width(7,8.4);
-			log.width(8,8.4);
+			Worksheet conf = wb.newWorksheet("conf");
 
-			// headers
-			log.value(0,0, "Filename");
-			log.value(0,1, "Date");
-			log.value(0,2, "Time");
-			log.value(0,3,"Total Seeds");
-			log.value(0,4,"");
-			log.value(0,5,"%lvl1");
-			log.value(0,6,"%lvl2");
-			log.value(0,7,"%lvl3");
-			log.value(0,8,"%lvl4");
+			logAndConfigSheets(log, conf, outConf, procConf);
 
 			int logSheetRow = 1;
 			int rowsSinceLastNew = 0;
@@ -209,6 +186,76 @@ public class Durum {
 
 		System.out.println("\n\nFinished processing for all images after " + (System.currentTimeMillis() - startTimeTotal) / 1000. + " seconds.");
 	}//end method doProcessing()
+
+	protected static void logAndConfigSheets(Worksheet log, Worksheet configs, OutputConfig outConf, ProcessingConfig procConf) {
+		log.setZoom(200);
+			
+		// styling
+		log.range(0,0,15,15).style().horizontalAlignment("center").set();
+		log.range(1,5,15,15).style().format("0.0%").set();
+		log.range(1,1,15,1).style().format("m/d/yyyy").set();
+		log.range(1,2,15,2).style().format("h:mm:ss AM/PM").set();
+		
+		log.width(1,11);
+		log.width(2,11);
+		log.width(3,11.7);
+		log.width(4,4.5);
+		log.width(5,8.4);
+		log.width(6,8.4);
+		log.width(7,8.4);
+		log.width(8,8.4);
+
+		// headers
+		log.value(0,0, "Filename");
+		log.value(0,1, "Date");
+		log.value(0,2, "Time");
+		log.value(0,3,"Total Seeds");
+		log.value(0,4,"");
+		log.value(0,5,"%lvl1");
+		log.value(0,6,"%lvl2");
+		log.value(0,7,"%lvl3");
+		log.value(0,8,"%lvl4");
+
+		// configs sheet settings
+		configs.setZoom(200);
+
+		// headers
+		configs.value(0,0, "Output Configurations");
+		configs.value(1,0, "Setting");
+		configs.value(1,1, "Value");
+
+		// values
+		Field[] outConfFields = outConf.getClass().getFields();
+		int fieldIdx = 0;
+		for (int rowIdx = 2; fieldIdx < outConfFields.length; rowIdx++) {
+			configs.value(rowIdx,0, outConfFields[fieldIdx].getName());
+			try {
+				configs.value(rowIdx, 1, outConfFields[fieldIdx].get(outConf).toString());
+			} catch (Exception e) {
+				configs.value(rowIdx,1, "Couldn't access output configuration value. " + e.getMessage() + "    " + e.getStackTrace());
+			}
+			fieldIdx++;
+		}//end adding each of the output configuration values
+
+		// headers again
+		configs.value(3 + outConfFields.length, 0, "Processing Configuration");
+		configs.value(4 + outConfFields.length, 0, "Setting");
+		configs.value(4 + outConfFields.length, 1, "Value");
+
+		// values again
+		Field[] procConfFields = procConf.getClass().getFields();
+		fieldIdx = 0;
+		for (int rowIdx = 5 + outConfFields.length; fieldIdx < procConfFields.length; rowIdx++) {
+			configs.value(rowIdx, 0, procConfFields[fieldIdx].getName());
+			try {
+				configs.value(rowIdx, 1, procConfFields[fieldIdx].get(procConf).toString());
+			} catch (Exception e) {
+				configs.value(rowIdx,1, "Couldn't access processing configuration value. " + e.getMessage() + "    " + e.getStackTrace());
+			}
+			fieldIdx++;
+		}//end adding each of the processing configuration values
+
+	}
 
 	/**
 	 * Uses Bill's methods to clean an image down to just the roi
