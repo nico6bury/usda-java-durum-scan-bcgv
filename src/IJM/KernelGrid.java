@@ -99,7 +99,7 @@ public class KernelGrid {
 	protected void deleteTape(ImagePlus image) {
 		ImageProcessor prc = image.getProcessor();
 		for (int x = 2223; x < image.getWidth(); x++) {
-			for (int y = 0; y < image.getHeight(); y++) {
+			for (int y = 0; y < Math.min(image.getHeight(), 300); y++) {
 				prc.putPixel(x,y,0);
 			}//end looping over y values
 		}//end looping over x values
@@ -257,6 +257,9 @@ public class KernelGrid {
 			// quadKerns is roiManager gotten from running quadrant through getKernels1
 			RoiManager quadKerns = getKernels(quadImgs[q], prefix, letter + letter, outConf, procConf, outConf.save_imgs_gen, outConf.save_particle_results, false, true);
 			ResultsTable rt = ResultsTable.getResultsTable();
+
+			if (rt.size() == 0) {return;}
+
 			double[] roundCol = rt.getColumn("Round");
 			double[] areaCol = rt.getColumn("Area");
 			double[] feretCol = rt.getColumn("Feret");
