@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class ProcessingConfig implements ConfigStore {
     
-    public int chalklvl1End = 10;
+    public int chalklvl1End = 12;
     public int chalklvl2End = 25;
-    public int chalklvl3End = 45;
+    public int chalklvl3End = 50;
     public int chalklvl4End = 100;
 
     public int phase1_threshold_merged_feret_low = 85;
@@ -65,10 +65,10 @@ public class ProcessingConfig implements ConfigStore {
     public boolean phase1Thresh2FlipThreshold = false;
 
     public int chalkChalkThresh_H_Min = 130;
-    public int chalkChalkThresh_H_Max = 185;
+    public int chalkChalkThresh_H_Max = 225;
     public int chalkChalkThresh_S_Min = 0;
     public int chalkChalkThresh_S_Max = 255;
-    public int chalkChalkThresh_B_Min = 185;
+    public int chalkChalkThresh_B_Min = 175;
     public int chalkChalkThresh_B_Max = 255;
     public boolean chalkChalkThresh_H_Pass = false;
     public boolean chalkChalkThresh_S_Pass = true;
