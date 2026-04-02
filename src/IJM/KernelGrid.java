@@ -258,7 +258,7 @@ public class KernelGrid {
 			RoiManager quadKerns = getKernels(quadImgs[q], prefix, letter + letter, outConf, procConf, outConf.save_imgs_gen, outConf.save_particle_results, false, true);
 			ResultsTable rt = ResultsTable.getResultsTable();
 
-			if (rt.size() == 0) {return;}
+			if (rt.size() == 0) {continue;}
 
 			double[] roundCol = rt.getColumn("Round");
 			double[] areaCol = rt.getColumn("Area");
