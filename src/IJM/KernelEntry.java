@@ -17,6 +17,8 @@ public class KernelEntry {
     public int phase3Position = -1;
     public List<String> flags;
     public double kernelArea = -0.001;
+    public int x = -1;
+    public int y = -1;
     
     public File originalFile;
     /**

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.Comparator;
 import java.util.List;
 
 import org.dhatim.fastexcel.Workbook;
@@ -285,4 +286,17 @@ public class Durum {
 		newImp.updateAndDraw();
 		return newImp;
 	}//end cleanCroppedRoi()
+
+	public static RowSortComparator rsc = new RowSortComparator();
+	
+	public static class RowSortComparator implements Comparator<KernelEntry> {
+		public int rowHeightTolerance = 50;
+
+		@Override
+		public int compare(KernelEntry p1, KernelEntry p2) {
+			if (p1.y == p2.y || Math.abs(p1.y - p2.y) < rowHeightTolerance) {
+				return Integer.compare(p1.x,p2.x);
+			} else {return Integer.compare(p1.y,p2.y);}
+		}
+	}
 }//end class Durum
