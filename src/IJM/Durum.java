@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
@@ -61,7 +62,7 @@ public class Durum {
 		dir.delete();
 	}//end recursiveDeleteDirectory()
 
-	public static void doProcessing(List<File> imgFiles) {
+	public static void doProcessing(List<File> imgFiles, Consumer<String> guiUpdater) {
 		long startTimeTotal = System.currentTimeMillis();
 
 		OutputConfig outConf = new OutputConfig();
@@ -76,11 +77,11 @@ public class Durum {
 			jar_location = new File(IJProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			System.err.println("\n\nCOULD NOT FIND JAR FILE FOR PATH BASE. THIS SHOULD NOT HAPPEN.\n\n");
+			guiUpdater.accept("\n\nCOULD NOT FIND JAR FILE FOR PATH BASE. THIS SHOULD NOT HAPPEN.\n\n");
 			jar_location = "";
 		}
 
-		System.out.println(jar_location);
+		guiUpdater.accept(jar_location);
 		outConf.path_base = jar_location;
 
 		outConf.writeConfig();
@@ -89,7 +90,7 @@ public class Durum {
 
 		// delete images from previous runs
 		File dataBase = new File(outConf.path_base, "data\\");
-		System.out.println(dataBase.getAbsolutePath());
+		guiUpdater.accept(dataBase.getAbsolutePath());
 		if (!dataBase.exists()) {dataBase.mkdir();}
 		for(File file : dataBase.listFiles()) {recursiveDeleteDirectory(file);}
 
@@ -108,56 +109,56 @@ public class Durum {
 
 			for (File imgFile : imgFiles) {
 
-				System.out.println("\nStarting processing for " + imgFile.getName());
+				guiUpdater.accept("\nStarting processing for " + imgFile.getName());
 				long startTime = System.currentTimeMillis();
 				KernelGrid kernGrid = new KernelGrid(imgFile, outConf);
 
 				// major function call
 				kernGrid.phase1FindQuadrants(outConf, procConf);
 
-				System.out.println("Finished phase 1 of processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime) / 1000. + " seconds.");
+				guiUpdater.accept("Finished phase 1 of processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime) / 1000. + " seconds.");
 				if (outConf.print_singleton_counts) {
-					System.out.println("Phase 1 found " + kernGrid.phase1Singletons.size() + " singleton kernels. " + kernGrid.phase1Merged.size() + " merged particles remain.");
+					guiUpdater.accept("Phase 1 found " + kernGrid.phase1Singletons.size() + " singleton kernels. " + kernGrid.phase1Merged.size() + " merged particles remain.");
 					double percent = (double)(kernGrid.phase1Singletons.size()) / (double)(kernGrid.phase1Singletons.size() + kernGrid.phase1Merged.size()) * 100;
-					System.out.println("Estimated percentage segmentation complete: " + String.format("%.2f", percent) + "%");
+					guiUpdater.accept("Estimated percentage segmentation complete: " + String.format("%.2f", percent) + "%");
 				}
 
 				long startTime2 = System.currentTimeMillis();
-				System.out.println("Getting ready to start phase 2 of processing, watershedding merged kernels.");
+				guiUpdater.accept("Getting ready to start phase 2 of processing, watershedding merged kernels.");
 				
 				// major function call
 				kernGrid.phase2WatershedMerged(outConf, procConf);
 
 				System.out.println("Finished phase 2 of processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime2) / 1000. + " seconds.");
 				if (outConf.print_singleton_counts) {
-					System.out.println("Phase 2 found an additional " + kernGrid.phase2Singletons.size() + " singleton kernels. " + kernGrid.phase2Merged.size() + " merged particles remain.");
+					guiUpdater.accept("Phase 2 found an additional " + kernGrid.phase2Singletons.size() + " singleton kernels. " + kernGrid.phase2Merged.size() + " merged particles remain.");
 					double percent = (double)(kernGrid.phase1Singletons.size() + kernGrid.phase2Singletons.size()) / (double)(kernGrid.phase1Singletons.size() + kernGrid.phase2Singletons.size() + kernGrid.phase2Merged.size()) * 100;
-					System.out.println("Estimated percentage segmentation complete: " + String.format("%.2f", percent) + "%");
+					guiUpdater.accept("Estimated percentage segmentation complete: " + String.format("%.2f", percent) + "%");
 				}
 
 				long startTime3 = System.currentTimeMillis();
-				System.out.println("Getting ready to start phase 3 of processing, clean-up of misc cases.");
+				guiUpdater.accept("Getting ready to start phase 3 of processing, clean-up of misc cases.");
 				
 				// major function call
 				kernGrid.phase3CleanUpMiscCases(outConf, procConf);
 
-				System.out.println("Finished phase 3 of processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime3) / 1000. + " seconds.");
+				guiUpdater.accept("Finished phase 3 of processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime3) / 1000. + " seconds.");
 				if (outConf.print_singleton_counts) {
-					System.out.println("Phase 3 found an additional " + kernGrid.phase3Singletons.size() + " singleton kernels. " + kernGrid.phase3Merged.size() + " merged or split particles remain.");
+					guiUpdater.accept("Phase 3 found an additional " + kernGrid.phase3Singletons.size() + " singleton kernels. " + kernGrid.phase3Merged.size() + " merged or split particles remain.");
 					double percent = (double)(kernGrid.phase1Singletons.size() + kernGrid.phase2Singletons.size() + kernGrid.phase3Singletons.size()) / (double)(kernGrid.phase1Singletons.size() + kernGrid.phase2Singletons.size() + kernGrid.phase3Singletons.size() + kernGrid.phase3Merged.size()) * 100;
-					System.out.println("Estimated percentage segmentation complete: " + String.format("%.2f", percent) + "%");
+					guiUpdater.accept("Estimated percentage segmentation complete: " + String.format("%.2f", percent) + "%");
 				}
 
 				long startTime4 = System.currentTimeMillis();
-				System.out.println("Getting ready to start chalk processing.");
+				guiUpdater.accept("Getting ready to start chalk processing.");
 
 				Worksheet ws = wb.newWorksheet(imgFile.getName());
 				// major function call
 				int[][] chalkCounts = kernGrid.getChalk(outConf, procConf, ws);
 
-				System.out.println("Finished finding chalk value for each kernel in " + imgFile.getName() + " in " + String.format("%.1f", (System.currentTimeMillis() - startTime4) / 1000.) + " seconds.");
+				guiUpdater.accept("Finished finding chalk value for each kernel in " + imgFile.getName() + " in " + String.format("%.1f", (System.currentTimeMillis() - startTime4) / 1000.) + " seconds.");
 				
-				System.out.println("Writing to excel");
+				guiUpdater.accept("Writing to excel");
 				// major function call
 				kernGrid.writeToExcel(outConf, logSheetRow, ws, log, chalkCounts);
 				
@@ -169,8 +170,7 @@ public class Durum {
 					rowsSinceLastNew = 0;
 				}
 				
-
-				System.out.println("Finished all processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime) / 1000. + " seconds.\n");
+				guiUpdater.accept("Finished all processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime) / 1000. + " seconds.\n");
 				IJ.runMacro("close(\"*\");");
 			}//end processing each selected image file
 
@@ -178,7 +178,7 @@ public class Durum {
 				ioe.printStackTrace();
 		}//end trying to do stuff and catching IOExceptions
 
-		System.out.println("\n\nFinished processing for all images after " + (System.currentTimeMillis() - startTimeTotal) / 1000. + " seconds.");
+		guiUpdater.accept("\n\nFinished processing for all images after " + (System.currentTimeMillis() - startTimeTotal) / 1000. + " seconds.");
 	}//end method doProcessing()
 
 	protected static void logAndConfigSheets(Worksheet log, Worksheet configs, OutputConfig outConf, ProcessingConfig procConf) {

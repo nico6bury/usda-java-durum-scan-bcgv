@@ -16,6 +16,8 @@ import ij.plugin.frame.RoiManager;
 import ij.process.ImageConverter;
 
 public class AnalyzeParticles {
+    public static PrintStream originalPrintStream;
+
     /**
      * Returns File that points to the location of the jar file the program is running from.
      * This function is used to locate directories adjacent to the jar file.
@@ -140,7 +142,11 @@ public class AnalyzeParticles {
      * @see disableConsoleSpam()
      */
     protected static void enableConsoleSpam() {
-        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        if (originalPrintStream != null) {
+            System.setOut(originalPrintStream);
+        } else {
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        }
     }//end enableConsoleSpam()
 
     /**

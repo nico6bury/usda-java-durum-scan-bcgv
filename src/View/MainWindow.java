@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,6 +25,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -62,7 +66,8 @@ public class MainWindow extends javax.swing.JFrame {
     // progress bar for imagej processing
     ProgressMonitor progressMonitor;
     // task for background work
-    IJTask ijTask = new IJTask(imageQueue);
+    IJTask ijTask;
+    PrintStream ps;
     ScanConfig scanConfig = new ScanConfig();
     OutputConfig outputConfig = new OutputConfig();
     ProcessingConfig procConfig = new ProcessingConfig();
@@ -114,7 +119,7 @@ public class MainWindow extends javax.swing.JFrame {
         tb.append("\t");
         tb.append(Constants.PEOPLE);
         tb.append("\n");
-        tb.append("To interface with EPSON V600 Scanner\n");
+        tb.append("To interface with EPSON V850 Scanner\n");
         tb.append("To collect transmissive images of durum samples in a big clear-ish grid\n");
         tb.append("Process image to estimate %chalk");
         uxTitleBlockTxt.setText(tb.toString());
@@ -141,6 +146,14 @@ public class MainWindow extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         uxOutputTable.setDefaultRenderer(String.class, centerRenderer);
+
+        // set up uxStatusTxt to get redirected all the console output
+        PrintStream printStream = new PrintStream(new uxStatusTxtIOStream(uxStatusTxt));
+        System.setOut(printStream);
+        System.setErr(printStream);
+        this.ps = printStream;
+
+        ijTask = new IJTask(imageQueue, printStream);
     }//end MainWindow constructor
 
     /**
@@ -663,6 +676,27 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public class uxStatusTxtIOStream extends OutputStream {
+        private javax.swing.JTextArea uxStatusTxt;
+
+        public uxStatusTxtIOStream(javax.swing.JTextArea uxStatusTxt) {
+            this.uxStatusTxt = uxStatusTxt;
+        }//end constructor
+
+        @Override
+        public void write(int b) throws IOException {
+            // use invokeLater to deal with the threading stuff
+            SwingUtilities.invokeLater(() -> {
+                // Convert byte to char and append to JTextArea
+                uxStatusTxt.append(String.valueOf((char)b));
+                // Automatically scroll to the bottom
+                uxStatusTxt.setCaretPosition(uxStatusTxt.getDocument().getLength());
+                uxStatusTxt.paintImmediately(uxStatusTxt.getBounds());
+            });
+        }
+        
+    }
+
     private void uxScanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxScanBtnActionPerformed
         // PerformScan();
         uxScanQueueBtnActionPerformed(evt);
@@ -1013,7 +1047,9 @@ public class MainWindow extends javax.swing.JFrame {
                 // IJProcess.lower_flag_thresh = areaFlagDialog.firstFlag;
                 // IJProcess.upper_flag_thresh = areaFlagDialog.secondFlag;
 
-                SimpleResult<String> outputData = ijTask.doInBackground();
+                ijTask = new IJTask(imageQueue, ps);
+                ijTask.execute();
+                // SimpleResult<String> outputData = ijTask.doInBackground();
                 if (ijTask.isDone()) {
                     setCursor(Cursor.getDefaultCursor());
                 }//end if the task is done
@@ -1021,18 +1057,20 @@ public class MainWindow extends javax.swing.JFrame {
                     //     () -> JOptionPane.showMessageDialog(this, "Your images have finsihed processing.")
                     // );
                 // progressDialog.setVisible(false);
-                if (outputData.isErr()) {
-                    outputData.getError().printStackTrace();
-                    showGenericExceptionMessage(outputData.getError());
-                }//end if we couldn't get output data
+                // if (outputData.isErr()) {
+                //     outputData.getError().printStackTrace();
+                //     showGenericExceptionMessage(outputData.getError());
+                // }//end if we couldn't get output data
                 int prev_row_count = uxOutputTable.getRowCount();
                 // group together SumResults which came from the same file path
                 // List<List<SumResult>> groupedResults = SumResult.groupResultsByFile(ijProcess.lastProcResult);
                 // process sumResults into string columns
                 // updateOutputTable(groupedResults);
                 // clear queue now that it's been processed
-                imageQueue.clear();
-                UpdateQueueList();
+                if (ijTask.isDone()) {
+                    imageQueue.clear();
+                    UpdateQueueList();
+                }
                 // see about updating selections
                 if (prev_row_count < uxOutputTable.getRowCount()) {
                     uxOutputTable.changeSelection(prev_row_count, 0, false, false);
