@@ -115,8 +115,8 @@ public class MainWindow extends javax.swing.JFrame {
         tb.append(Constants.PEOPLE);
         tb.append("\n");
         tb.append("To interface with EPSON V600 Scanner\n");
-        tb.append("To collect reflective image of flour sample in a 100mm diameter petri dish\n");
-        tb.append("Process image to estimate %contamination and L* color from CIELAB color space");
+        tb.append("To collect transmissive images of durum samples in a big clear-ish grid\n");
+        tb.append("Process image to estimate %chalk");
         uxTitleBlockTxt.setText(tb.toString());
 
         // configure the table model
