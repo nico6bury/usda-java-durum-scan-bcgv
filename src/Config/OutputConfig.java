@@ -31,6 +31,7 @@ public class OutputConfig implements ConfigStore {
     public int avg_kernel_area = 2304;
     public String path_baseCOMMENT = "This setting is ignored and overwritten by the program. The value saved here is the directory used as a base by the program when outputting files.";
     public String path_base = "";
+    public boolean delete_tape = true;
 
     public SimpleResult<String> readConfig() {
         return ConfigScribe.readConfig(this);

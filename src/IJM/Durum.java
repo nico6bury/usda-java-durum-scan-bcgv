@@ -116,7 +116,7 @@ public class Durum {
 
 				System.out.println("\nStarting processing for " + imgFile.getName());
 				long startTime = System.currentTimeMillis();
-				KernelGrid kernGrid = new KernelGrid(imgFile);
+				KernelGrid kernGrid = new KernelGrid(imgFile, outConf);
 
 				// major function call
 				kernGrid.phase1FindQuadrants(outConf, procConf);
