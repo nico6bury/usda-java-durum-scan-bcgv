@@ -54,7 +54,6 @@ public class MainWindow extends javax.swing.JFrame {
      * Holds all images added, regardless of whether or not they've been processed
      */
     private List<File> allImages = new ArrayList<File>();
-    private IJProcess ijProcess = new IJProcess();
     // where displayed image was last selected from
     private LastSelectedFrom lastSelectedFrom = LastSelectedFrom.NoSelection;
     // dialog boxes we can re-use

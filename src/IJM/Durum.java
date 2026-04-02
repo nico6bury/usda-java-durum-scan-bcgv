@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -23,10 +22,7 @@ import Config.ScanConfig;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
-import ij.measure.ResultsTable;
-import ij.plugin.frame.RoiManager;
 import ij.process.ColorProcessor;
-import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
 public class Durum {
