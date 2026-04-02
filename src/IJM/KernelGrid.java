@@ -166,6 +166,8 @@ public class KernelGrid {
 				int rIdx = rt.getColumnIndex("Round");
 				int fIdx = rt.getColumnIndex("Feret");
 				int faIdx = rt.getColumnIndex("FeretAngle");
+				int xIdx = rt.getColumnIndex("X");
+				int yIdx = rt.getColumnIndex("Y");
 				for (int i = 0; i < rt.size(); i++) {
 					double area = rt.getValueAsDouble(aIdx, i);
 					double round = rt.getValueAsDouble(rIdx, i);
@@ -184,6 +186,8 @@ public class KernelGrid {
 					if (make_entries) {
 						KernelEntry kern = new KernelEntry(originalImageFile, quad, i+1, roiArray[i], cleaned);
 						kern.kernelArea = area;
+						kern.x = (int)rt.getValueAsDouble(xIdx, i);
+						kern.y = (int)rt.getValueAsDouble(yIdx, i);
 						if (isMerged(procConf, round, feret)) {
 							this.phase1Merged.add(kern);
 						}//end if the kernel is considered merged, flag it as such
@@ -360,6 +364,8 @@ public class KernelGrid {
 			int miColIdx = rt.getColumnIndex("Minor");
 			int maColIdx = rt.getColumnIndex("Major");
 			int faColIdx = rt.getColumnIndex("FeretAngle");
+			int xColIdx = rt.getColumnIndex("X");
+			int yColIdx = rt.getColumnIndex("Y");
 			int mergedCount = 0;
 			int splitCount = 0;
 			int trueCount = 0;
@@ -417,6 +423,8 @@ public class KernelGrid {
 								cleanedImage
 							);
 							thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
+							thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
+							thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
 							thisComponentEntry.phase2Position = (r+1);
 							// remove correctly segmented kernels from the overall image
 							phase3Image.setRoi(roi);
@@ -483,6 +491,8 @@ public class KernelGrid {
 					);
 					thisComponentEntry.phase2Position = (r+1);
 					thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
+					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
+					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
 
 					// thisEntry.discoveredComponents.add(thisComponentEntry);
 					phase2Singletons.add(thisComponentEntry);
@@ -571,6 +581,8 @@ public class KernelGrid {
 			int maColIdx = rt.getColumnIndex("Major");
 			int faColIdx = rt.getColumnIndex("FeretAngle");
 			int prColIdx = rt.getColumnIndex("Perim.");
+			int xColIdx = rt.getColumnIndex("X");
+			int yColIdx = rt.getColumnIndex("Y");
 			int mergedCount = 0;
 			int splitCount = 0;
 			for (int j = 0; j < rt.size(); j++) {
@@ -592,6 +604,8 @@ public class KernelGrid {
 					KernelEntry thisComponentEntry = new KernelEntry(thisEntry);
 					thisComponentEntry.phase3Position = (r+1);
 					thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
+					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
+					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
 					thisComponentEntry.cleanedImage = erodedImage;
 
 					// separate into the three bins: singleton, split, and merged
@@ -633,6 +647,8 @@ public class KernelGrid {
 					KernelEntry thisComponentEntry = new KernelEntry(thisEntry);
 					thisComponentEntry.phase3Position = (r+1);
 					thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
+					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
+					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
 					thisComponentEntry.cleanedImage = erodedImage;
 
 					// thisEntry.discoveredComponents = new ArrayList<>();
