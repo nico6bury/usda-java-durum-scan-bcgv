@@ -260,27 +260,27 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jScrollPane6" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="jScrollPane1" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="uxConnectToScannerBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="uxScanBigBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="uxScanQueueBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="uxShouldOverwriteName" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="uxAddFilesBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="uxProcessAllBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="uxEmptyQueueBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="uxOverwriteName" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="173" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -316,6 +316,7 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Connect to Scanner"/>
                         <Property name="toolTipText" type="java.lang.String" value="Attempts to make a connection to the scanner, if one is connected."/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxConnectToScannerBtnActionPerformed"/>
@@ -348,6 +349,7 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Scan + Add to Queue"/>
                         <Property name="toolTipText" type="java.lang.String" value="Scans and saves an image, then adds it to the processing queue."/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxScanQueueBtnActionPerformed"/>
@@ -434,6 +436,7 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Auto-Gen Image Name"/>
                         <Property name="toolTipText" type="java.lang.String" value="If selected, then the program will automatically generate a name for scanned images."/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxShouldOverwriteNameActionPerformed"/>

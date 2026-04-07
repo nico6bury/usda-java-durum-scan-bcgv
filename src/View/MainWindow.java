@@ -255,6 +255,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxConnectToScannerBtn.setFont(uxConnectToScannerBtn.getFont().deriveFont(uxConnectToScannerBtn.getFont().getSize()+2f));
         uxConnectToScannerBtn.setText("Connect to Scanner");
         uxConnectToScannerBtn.setToolTipText("Attempts to make a connection to the scanner, if one is connected.");
+        uxConnectToScannerBtn.setEnabled(false);
         uxConnectToScannerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxConnectToScannerBtnActionPerformed(evt);
@@ -275,6 +276,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxScanQueueBtn.setFont(uxScanQueueBtn.getFont().deriveFont(uxScanQueueBtn.getFont().getSize()+2f));
         uxScanQueueBtn.setText("Scan + Add to Queue");
         uxScanQueueBtn.setToolTipText("Scans and saves an image, then adds it to the processing queue.");
+        uxScanQueueBtn.setEnabled(false);
         uxScanQueueBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxScanQueueBtnActionPerformed(evt);
@@ -319,6 +321,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxShouldOverwriteName.setFont(uxShouldOverwriteName.getFont());
         uxShouldOverwriteName.setText("Auto-Gen Image Name");
         uxShouldOverwriteName.setToolTipText("If selected, then the program will automatically generate a name for scanned images.");
+        uxShouldOverwriteName.setEnabled(false);
         uxShouldOverwriteName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxShouldOverwriteNameActionPerformed(evt);
@@ -362,7 +365,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(uxConnectToScannerBtn)
@@ -378,7 +381,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(uxOverwriteName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jSplitPane2.setTopComponent(jPanel1);
