@@ -153,7 +153,7 @@ public class MainWindow extends javax.swing.JFrame {
         System.setErr(printStream);
         this.ps = printStream;
 
-        ijTask = new IJTask(imageQueue, printStream);
+        ijTask = new IJTask(imageQueue, printStream, this::postProcessInterfaceUpdates);
     }//end MainWindow constructor
 
     /**
@@ -1022,6 +1022,32 @@ public class MainWindow extends javax.swing.JFrame {
         UpdateQueueList();
     }//GEN-LAST:event_uxEmptyQueueBtnActionPerformed
 
+    public void postProcessInterfaceUpdates(SimpleResult<String> result) {
+        setCursor(Cursor.getDefaultCursor());
+        // SwingUtilities.invokeLater(
+            //     () -> JOptionPane.showMessageDialog(this, "Your images have finsihed processing.")
+            // );
+        // progressDialog.setVisible(false);
+        // if (outputData.isErr()) {
+        //     outputData.getError().printStackTrace();
+        //     showGenericExceptionMessage(outputData.getError());
+        // }//end if we couldn't get output data
+        int prev_row_count = uxOutputTable.getRowCount();
+        // group together SumResults which came from the same file path
+        // List<List<SumResult>> groupedResults = SumResult.groupResultsByFile(ijProcess.lastProcResult);
+        // process sumResults into string columns
+        // updateOutputTable(groupedResults);
+        // clear queue now that it's been processed
+        imageQueue.clear();
+        UpdateQueueList();
+        // see about updating selections
+        if (prev_row_count < uxOutputTable.getRowCount()) {
+            uxOutputTable.changeSelection(prev_row_count, 0, false, false);
+        }//end if we have a new row to select
+        // make sure cursor is updated
+        setCursor(Cursor.getDefaultCursor());
+    }//end postProcessInterfaceUpdates()
+
     /**
      * This method contains the code for initiating processing of all images in the queue and updating things afterwards.
      * @param evt
@@ -1050,36 +1076,10 @@ public class MainWindow extends javax.swing.JFrame {
                 // IJProcess.lower_flag_thresh = areaFlagDialog.firstFlag;
                 // IJProcess.upper_flag_thresh = areaFlagDialog.secondFlag;
 
-                ijTask = new IJTask(imageQueue, ps);
+                ijTask = new IJTask(imageQueue, ps, this::postProcessInterfaceUpdates);
                 ijTask.execute();
                 // SimpleResult<String> outputData = ijTask.doInBackground();
-                if (ijTask.isDone()) {
-                    setCursor(Cursor.getDefaultCursor());
-                }//end if the task is done
-                // SwingUtilities.invokeLater(
-                    //     () -> JOptionPane.showMessageDialog(this, "Your images have finsihed processing.")
-                    // );
-                // progressDialog.setVisible(false);
-                // if (outputData.isErr()) {
-                //     outputData.getError().printStackTrace();
-                //     showGenericExceptionMessage(outputData.getError());
-                // }//end if we couldn't get output data
-                int prev_row_count = uxOutputTable.getRowCount();
-                // group together SumResults which came from the same file path
-                // List<List<SumResult>> groupedResults = SumResult.groupResultsByFile(ijProcess.lastProcResult);
-                // process sumResults into string columns
-                // updateOutputTable(groupedResults);
-                // clear queue now that it's been processed
-                if (ijTask.isDone()) {
-                    imageQueue.clear();
-                    UpdateQueueList();
-                }
-                // see about updating selections
-                if (prev_row_count < uxOutputTable.getRowCount()) {
-                    uxOutputTable.changeSelection(prev_row_count, 0, false, false);
-                }//end if we have a new row to select
-                // make sure cursor is updated
-                setCursor(Cursor.getDefaultCursor());
+                
             } catch (Exception e) {
                 e.printStackTrace();
                 showGenericExceptionMessage(e);
