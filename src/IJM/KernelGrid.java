@@ -423,8 +423,8 @@ public class KernelGrid {
 								cleanedImage
 							);
 							thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
-							thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
-							thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
+							thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r) + thisEntry.x;
+							thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r) + thisEntry.y;
 							thisComponentEntry.phase2Position = (r+1);
 							// remove correctly segmented kernels from the overall image
 							phase3Image.setRoi(roi);
@@ -491,8 +491,8 @@ public class KernelGrid {
 					);
 					thisComponentEntry.phase2Position = (r+1);
 					thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
-					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
-					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
+					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r) + thisEntry.x;
+					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r) + thisEntry.y;
 
 					// thisEntry.discoveredComponents.add(thisComponentEntry);
 					phase2Singletons.add(thisComponentEntry);
@@ -604,8 +604,8 @@ public class KernelGrid {
 					KernelEntry thisComponentEntry = new KernelEntry(thisEntry);
 					thisComponentEntry.phase3Position = (r+1);
 					thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
-					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
-					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
+					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r) + thisEntry.x;
+					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r) + thisEntry.y;
 					thisComponentEntry.cleanedImage = erodedImage;
 
 					// separate into the three bins: singleton, split, and merged
@@ -647,8 +647,8 @@ public class KernelGrid {
 					KernelEntry thisComponentEntry = new KernelEntry(thisEntry);
 					thisComponentEntry.phase3Position = (r+1);
 					thisComponentEntry.kernelArea = rt.getValueAsDouble(aColIdx, r);
-					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r);
-					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r);
+					thisComponentEntry.x = (int)rt.getValueAsDouble(xColIdx, r) + thisEntry.x;
+					thisComponentEntry.y = (int)rt.getValueAsDouble(yColIdx, r) + thisEntry.y;
 					thisComponentEntry.cleanedImage = erodedImage;
 
 					// thisEntry.discoveredComponents = new ArrayList<>();
@@ -674,7 +674,7 @@ public class KernelGrid {
 		}//end looping through each of the KernelEntries
 	}//end phase3CLeanUpMiscCases()
 
-	public int[][] getChalk(OutputConfig outConf, ProcessingConfig procConf, Worksheet ws) {
+	public int[][] getChalk(OutputConfig outConf, ProcessingConfig procConf, Worksheet sk) {
 		// first construct a list of all singleton KernEntries
 		List<KernelEntry> singletons = new ArrayList<>();
 		singletons.addAll(phase1Singletons);
@@ -682,6 +682,8 @@ public class KernelGrid {
 		singletons.addAll(phase3Singletons);
 
 		if (singletons.size() < 1) {return null;}
+
+		singletons.sort(Durum.rsc);
 
 		// lvl1,2,3,4,and invalid level
 		int[] aaCounts = new int[] {0,0,0,0,0};
@@ -694,6 +696,12 @@ public class KernelGrid {
 
 		File chalkImgBase = new File(outConf.path_base, "data\\" + singletons.get(0).originalFile.getName().replace(".tif","") + "\\chalk_images");
 		chalkImgBase.mkdir();
+
+		// headers for single-kernel-excel-sheet
+		sk.value(0, 0, "position");
+		sk.value(0,1,"chlk-level");
+		sk.value(0,2,"X");
+		sk.value(0,3,"Y");
 
 		for (int i = 0; i < singletons.size(); i++) {			
 			// kernel results
@@ -746,11 +754,17 @@ public class KernelGrid {
 			if (singletons.get(i).quadrant != null) {quadIndex = singletons.get(i).quadrant.ordinal();}
 
 			if (quadIndex == 4 || lvlIndex == 4) {
-				System.out.println("Invalid Kernel Found at position:" + singletons.get(i).getPositionString());
+				System.out.println("Invalid Kernel Found at position: " + singletons.get(i).getPositionString() + " with chalk percent " + String.format("%.1f", chalkPercent));
 			}
 
 			allCounts[quadIndex][lvlIndex]++;
 			
+			// write to single-kernel-specific excel sheet
+			sk.value(i+1, 0, singletons.get(i).getPositionString());
+			sk.value(i+1, 1, lvlIndex + 1);
+			sk.value(i+1, 2, singletons.get(i).x);
+			sk.value(i+1, 3, singletons.get(i).y);
+
 			rt.reset();
 
 		}//end looping over each of the singletons

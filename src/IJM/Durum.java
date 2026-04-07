@@ -152,14 +152,16 @@ public class Durum {
 				long startTime4 = System.currentTimeMillis();
 				guiUpdater.accept("Getting ready to start chalk processing.");
 
-				Worksheet ws = wb.newWorksheet(imgFile.getName());
 				// major function call
-				int[][] chalkCounts = kernGrid.getChalk(outConf, procConf, ws);
-
+				Worksheet sk = wb.newWorksheet(imgFile.getName() + "-singles");
+				sk.range(0,0,500,15).style().horizontalAlignment("center").set();
+				int[][] chalkCounts = kernGrid.getChalk(outConf, procConf, sk);
+				
 				guiUpdater.accept("Finished finding chalk value for each kernel in " + imgFile.getName() + " in " + String.format("%.1f", (System.currentTimeMillis() - startTime4) / 1000.) + " seconds.");
 				
 				guiUpdater.accept("Writing to excel");
 				// major function call
+				Worksheet ws = wb.newWorksheet(imgFile.getName() + "-sum");
 				kernGrid.writeToExcel(outConf, logSheetRow, ws, log, chalkCounts);
 				
 				// loop variable maintenance
@@ -293,10 +295,14 @@ public class Durum {
 		public int rowHeightTolerance = 50;
 
 		@Override
-		public int compare(KernelEntry p1, KernelEntry p2) {
-			if (p1.y == p2.y || Math.abs(p1.y - p2.y) < rowHeightTolerance) {
-				return Integer.compare(p1.x,p2.x);
-			} else {return Integer.compare(p1.y,p2.y);}
+		public int compare(KernelEntry k1, KernelEntry k2) {
+			if (k1.quadrant == k2.quadrant) {
+				if (k1.y == k2.y || Math.abs(k1.y - k2.y) < rowHeightTolerance) {
+					return Integer.compare(k1.x,k2.x);
+				} else {return Integer.compare(k1.y,k2.y);}
+			} else {
+				return Integer.compare(k1.quadrant.ordinal(), k2.quadrant.ordinal());
+			}
 		}
 	}
 }//end class Durum
