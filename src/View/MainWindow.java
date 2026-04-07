@@ -256,6 +256,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxConnectToScannerBtn.setText("Connect to Scanner");
         uxConnectToScannerBtn.setToolTipText("Attempts to make a connection to the scanner, if one is connected.");
         uxConnectToScannerBtn.setEnabled(false);
+        uxConnectToScannerBtn.setVisible(false);
         uxConnectToScannerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxConnectToScannerBtnActionPerformed(evt);
@@ -277,6 +278,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxScanQueueBtn.setText("Scan + Add to Queue");
         uxScanQueueBtn.setToolTipText("Scans and saves an image, then adds it to the processing queue.");
         uxScanQueueBtn.setEnabled(false);
+        uxScanQueueBtn.setVisible(false);
         uxScanQueueBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxScanQueueBtnActionPerformed(evt);
@@ -317,11 +319,14 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane6.setViewportView(uxTitleBlockTxt);
 
         uxOverwriteName.setFont(uxOverwriteName.getFont().deriveFont(uxOverwriteName.getFont().getSize()+2f));
+        uxOverwriteName.setEnabled(false);
+        uxOverwriteName.setVisible(false);
 
         uxShouldOverwriteName.setFont(uxShouldOverwriteName.getFont());
         uxShouldOverwriteName.setText("Auto-Gen Image Name");
         uxShouldOverwriteName.setToolTipText("If selected, then the program will automatically generate a name for scanned images.");
         uxShouldOverwriteName.setEnabled(false);
+        uxShouldOverwriteName.setVisible(false);
         uxShouldOverwriteName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxShouldOverwriteNameActionPerformed(evt);
@@ -330,6 +335,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel1.setFont(jLabel1.getFont().deriveFont(jLabel1.getFont().getSize()+1f));
         jLabel1.setText("Scanned Image Name");
+        jLabel1.setEnabled(false);
+        jLabel1.setVisible(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -613,6 +620,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxConnectScannerBtn.setFont(uxConnectScannerBtn.getFont().deriveFont(uxConnectScannerBtn.getFont().getSize()+2f));
         uxConnectScannerBtn.setText("Connect Scanner");
         uxConnectScannerBtn.setToolTipText("Attempt to establish a connection to a scanner.");
+        uxConnectScannerBtn.setEnabled(false);
         uxConnectScannerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxConnectScannerBtnActionPerformed(evt);
@@ -623,6 +631,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxResetScanner.setFont(uxResetScanner.getFont().deriveFont(uxResetScanner.getFont().getSize()+2f));
         uxResetScanner.setText("Reset Scanner");
         uxResetScanner.setToolTipText("Resets the connection to the scanner by attempting to close and reopen a connection.");
+        uxResetScanner.setEnabled(false);
         uxResetScanner.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxResetScannerActionPerformed(evt);
@@ -638,6 +647,7 @@ public class MainWindow extends javax.swing.JFrame {
         uxScanBtn.setFont(uxScanBtn.getFont().deriveFont(uxScanBtn.getFont().getSize()+2f));
         uxScanBtn.setText("Scan");
         uxScanBtn.setToolTipText("Scans and saves an image without adding it to the queue.");
+        uxScanBtn.setEnabled(false);
         uxScanBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uxScanBtnActionPerformed(evt);

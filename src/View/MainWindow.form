@@ -50,6 +50,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Connect Scanner"/>
                 <Property name="toolTipText" type="java.lang.String" value="Attempt to establish a connection to a scanner."/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxConnectScannerBtnActionPerformed"/>
@@ -64,6 +65,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Reset Scanner"/>
                 <Property name="toolTipText" type="java.lang.String" value="Resets the connection to the scanner by attempting to close and reopen a connection."/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxResetScannerActionPerformed"/>
@@ -90,6 +92,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Scan"/>
                 <Property name="toolTipText" type="java.lang.String" value="Scans and saves an image without adding it to the queue."/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxScanBtnActionPerformed"/>
@@ -321,6 +324,9 @@
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxConnectToScannerBtnActionPerformed"/>
                       </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="uxConnectToScannerBtn.setVisible(false);"/>
+                      </AuxValues>
                     </Component>
                     <Component class="javax.swing.JButton" name="uxScanBigBtn">
                       <Properties>
@@ -354,6 +360,9 @@
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxScanQueueBtnActionPerformed"/>
                       </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="uxScanQueueBtn.setVisible(false);"/>
+                      </AuxValues>
                     </Component>
                     <Component class="javax.swing.JButton" name="uxAddFilesBtn">
                       <Properties>
@@ -425,7 +434,11 @@
                             <Font component="uxOverwriteName" property="font" relativeSize="true" size="2"/>
                           </FontInfo>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="uxOverwriteName.setVisible(false);"/>
+                      </AuxValues>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="uxShouldOverwriteName">
                       <Properties>
@@ -441,6 +454,9 @@
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxShouldOverwriteNameActionPerformed"/>
                       </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="uxShouldOverwriteName.setVisible(false);"/>
+                      </AuxValues>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel1">
                       <Properties>
@@ -450,7 +466,11 @@
                           </FontInfo>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Scanned Image Name"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jLabel1.setVisible(false);"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
