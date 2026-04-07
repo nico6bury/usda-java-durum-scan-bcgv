@@ -119,7 +119,7 @@ public class MainWindow extends javax.swing.JFrame {
         tb.append("\t");
         tb.append(Constants.PEOPLE);
         tb.append("\n");
-        tb.append("To interface with EPSON V850 Scanner\n");
+        tb.append("To process images from EPSON v850 Scanner\n");
         tb.append("To collect transmissive images of durum samples in a big clear-ish grid\n");
         tb.append("Process image to estimate %chalk");
         uxTitleBlockTxt.setText(tb.toString());
