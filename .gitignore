@@ -23,3 +23,7 @@ durum-scan.config
 
 # Bundled jre
 /jre
+
+# temp files used during program execution
+tmp.tif
+tmp3.zip
