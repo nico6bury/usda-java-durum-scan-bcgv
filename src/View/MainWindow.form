@@ -806,18 +806,13 @@
                               </FontInfo>
                             </Property>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="11" rowCount="0">
+                              <Table columnCount="6" rowCount="0">
                                 <Column editable="false" title="FileID" type="java.lang.String"/>
-                                <Column editable="false" title="TH" type="java.lang.String"/>
-                                <Column editable="false" title="left cnt" type="java.lang.String"/>
-                                <Column editable="false" title="rght cnt" type="java.lang.String"/>
-                                <Column editable="false" title="left L*" type="java.lang.String"/>
-                                <Column editable="false" title="rght L*" type="java.lang.String"/>
-                                <Column editable="false" title="Avg L*" type="java.lang.String"/>
-                                <Column editable="false" title="left %A" type="java.lang.String"/>
-                                <Column editable="false" title="rght %A" type="java.lang.String"/>
-                                <Column editable="false" title="Avg %A" type="java.lang.String"/>
-                                <Column editable="false" title="Flag" type="java.lang.String"/>
+                                <Column editable="false" title="Total" type="java.lang.Integer"/>
+                                <Column editable="false" title="%lvl1" type="java.lang.Double"/>
+                                <Column editable="false" title="%lvl2" type="java.lang.Double"/>
+                                <Column editable="false" title="%lvl3" type="java.lang.Double"/>
+                                <Column editable="false" title="%lvl4" type="java.lang.Double"/>
                               </Table>
                             </Property>
                             <Property name="autoResizeMode" type="int" value="4"/>
