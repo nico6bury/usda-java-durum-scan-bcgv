@@ -36,7 +36,7 @@ public class ScanConfig implements ConfigStore {
     }//end writeConfig()
     
     @Override
-    public String getConfigFilename() {return "durum-scan-settings.conf";}
+    public String getConfigFilename() {return "DEPRECATED-scan-settings.conf";}
     
     @Override
     public List<String> getConfigHeader() {
@@ -55,5 +55,12 @@ public class ScanConfig implements ConfigStore {
     }//end getConfigHeader()
     
     @Override
-    public File getDirectoryLocation() {return null;}
+	public File getDirectoryLocation() {
+		File dirLoc = new File(System.getProperty("user.home"), "AppData\\Local\\ARS-SPIERU\\\\durum-scan-bcgv");
+		if (!dirLoc.exists()) {
+			if (dirLoc.mkdir()) {
+				return dirLoc;
+			} else {return null;}
+		} else {return dirLoc;}
+	}//end getDirectoryLocation()
 }

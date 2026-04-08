@@ -42,7 +42,7 @@ public class OutputConfig implements ConfigStore {
     }//end writeConfig()
     
     @Override
-    public String getConfigFilename() {return "output-scan-settings.conf";}
+    public String getConfigFilename() {return "output-settings.conf";}
     
     @Override
     public List<String> getConfigHeader() {
@@ -61,6 +61,13 @@ public class OutputConfig implements ConfigStore {
     }//end getConfigHeader()
     
     @Override
-    public File getDirectoryLocation() {return null;}
+	public File getDirectoryLocation() {
+		File dirLoc = new File(System.getProperty("user.home"), "AppData\\Local\\ARS-SPIERU\\\\durum-scan-bcgv");
+		if (!dirLoc.exists()) {
+			if (dirLoc.mkdir()) {
+				return dirLoc;
+			} else {return null;}
+		} else {return dirLoc;}
+	}//end getDirectoryLocation()
     
 }
