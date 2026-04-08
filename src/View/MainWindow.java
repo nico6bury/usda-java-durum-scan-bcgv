@@ -1056,6 +1056,9 @@ public class MainWindow extends javax.swing.JFrame {
         }//end if we have a new row to select
         // make sure cursor is updated
         setCursor(Cursor.getDefaultCursor());
+        uxAddFilesBtn.setEnabled(true);
+        uxProcessAllBtn.setEnabled(true);
+        uxEmptyQueueBtn.setEnabled(true);
     }//end postProcessInterfaceUpdates()
 
     /**
@@ -1088,6 +1091,9 @@ public class MainWindow extends javax.swing.JFrame {
 
                 ijTask = new IJTask(imageQueue, ps, this::postProcessInterfaceUpdates);
                 ijTask.execute();
+                uxAddFilesBtn.setEnabled(false);
+                uxProcessAllBtn.setEnabled(false);
+                uxEmptyQueueBtn.setEnabled(false);
                 // SimpleResult<String> outputData = ijTask.doInBackground();
                 
             } catch (Exception e) {
