@@ -40,6 +40,7 @@ import Utils.Constants;
 import Utils.Result;
 import Utils.Result.ResultType;
 import ij.IJ;
+import ij.ImagePlus;
 
 /**
  *
@@ -67,6 +68,9 @@ public class MainWindow extends javax.swing.JFrame {
     ProgressMonitor progressMonitor;
     // task for background work
     IJTask ijTask;
+    DisplayTask displayTask;
+    ImagePlus[] quadrantedIcons;
+    File lastSelectedFile;
     PrintStream ps;
     ScanConfig scanConfig = new ScanConfig();
     OutputConfig outputConfig = new OutputConfig();
@@ -125,22 +129,22 @@ public class MainWindow extends javax.swing.JFrame {
         uxTitleBlockTxt.setText(tb.toString());
 
         // configure the table model
-        ListSelectionListener lsl = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int idx = uxOutputTable.getSelectedRow();
-                    String selected_filename = uxOutputTable.getModel().getValueAt(idx, 0).toString();
-                    // call method to update image label
-                    updateImageDisplay(selected_filename);
-                    // update properties display
-                    uxImagePropertiesTxt.setText("Image: " + selected_filename + "\nSelected From: OutputTable[" + idx + "]");
-                    // update flags and such
-                    lastSelectedFrom = LastSelectedFrom.OutputTable;
-                }//end if the value is done adjusting
-            }//end valueChanged(e)
-        };
-        uxOutputTable.getSelectionModel().addListSelectionListener(lsl);
+        // ListSelectionListener lsl = new ListSelectionListener() {
+        //     @Override
+        //     public void valueChanged(ListSelectionEvent e) {
+        //         if (!e.getValueIsAdjusting()) {
+        //             int idx = uxOutputTable.getSelectedRow();
+        //             String selected_filename = uxOutputTable.getModel().getValueAt(idx, 0).toString();
+        //             // call method to update image label
+        //             updateImageDisplay(selected_filename);
+        //             // update properties display
+        //             uxImagePropertiesTxt.setText("Image: " + selected_filename + "\nSelected From: OutputTable[" + idx + "]");
+        //             // update flags and such
+        //             lastSelectedFrom = LastSelectedFrom.OutputTable;
+        //         }//end if the value is done adjusting
+        //     }//end valueChanged(e)
+        // };
+        // uxOutputTable.getSelectionModel().addListSelectionListener(lsl);
 
         // mess with the jtable so that column text is centered
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -200,8 +204,8 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         uxImagePropertiesTxt = new javax.swing.JTextArea();
-        uxPrevImageBtn = new javax.swing.JButton();
-        uxNextImageBtn = new javax.swing.JButton();
+        uxPrevQuadrantBtn = new javax.swing.JButton();
+        uxNextQuadrantBtn = new javax.swing.JButton();
         uxOpenFileBtn = new javax.swing.JButton();
         uxImageLabel = new javax.swing.JLabel();
         uxClearOutputBtn = new javax.swing.JButton();
@@ -448,23 +452,22 @@ public class MainWindow extends javax.swing.JFrame {
         uxImagePropertiesTxt.setColumns(1);
         uxImagePropertiesTxt.setFont(uxImagePropertiesTxt.getFont().deriveFont(uxImagePropertiesTxt.getFont().getSize()+1f));
         uxImagePropertiesTxt.setRows(1);
-        uxImagePropertiesTxt.setEnabled(false);
         uxImagePropertiesTxt.setPreferredSize(new java.awt.Dimension(102, 84));
         jScrollPane3.setViewportView(uxImagePropertiesTxt);
 
-        uxPrevImageBtn.setFont(uxPrevImageBtn.getFont().deriveFont(uxPrevImageBtn.getFont().getSize()+2f));
-        uxPrevImageBtn.setText("Previous Image");
-        uxPrevImageBtn.addActionListener(new java.awt.event.ActionListener() {
+        uxPrevQuadrantBtn.setFont(uxPrevQuadrantBtn.getFont().deriveFont(uxPrevQuadrantBtn.getFont().getSize()+2f));
+        uxPrevQuadrantBtn.setText("Previous Quadrant");
+        uxPrevQuadrantBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uxPrevImageBtnActionPerformed(evt);
+                uxPrevQuadrantBtnActionPerformed(evt);
             }
         });
 
-        uxNextImageBtn.setFont(uxNextImageBtn.getFont().deriveFont(uxNextImageBtn.getFont().getSize()+2f));
-        uxNextImageBtn.setText("Next Image");
-        uxNextImageBtn.addActionListener(new java.awt.event.ActionListener() {
+        uxNextQuadrantBtn.setFont(uxNextQuadrantBtn.getFont().deriveFont(uxNextQuadrantBtn.getFont().getSize()+2f));
+        uxNextQuadrantBtn.setText("Next Quadrant");
+        uxNextQuadrantBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                uxNextImageBtnActionPerformed(evt);
+                uxNextQuadrantBtnActionPerformed(evt);
             }
         });
 
@@ -507,16 +510,16 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(uxOpenFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(uxPrevImageBtn)
+                        .addComponent(uxPrevQuadrantBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(uxNextImageBtn))
+                        .addComponent(uxNextQuadrantBtn))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(uxOpenOutputFile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(uxClearOutputBtn))
                     .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(uxImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                .addComponent(uxImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -528,15 +531,15 @@ public class MainWindow extends javax.swing.JFrame {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(uxPrevImageBtn)
-                            .addComponent(uxNextImageBtn))
+                            .addComponent(uxPrevQuadrantBtn)
+                            .addComponent(uxNextQuadrantBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(uxOpenFileBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(uxOpenOutputFile)
                             .addComponent(uxClearOutputBtn))
-                        .addGap(0, 177, Short.MAX_VALUE))
+                        .addGap(0, 174, Short.MAX_VALUE))
                     .addComponent(uxImageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -819,45 +822,32 @@ public class MainWindow extends javax.swing.JFrame {
         uxQueueList.setListData(imageArray);
     }//end UpdateQueueList()
 
+    int currentQuadrant = 0;
+
     /**
      * Figures out where currently selected image is located, finds image after it, then changes selection of displayed image.
      */
-    private void uxNextImageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxNextImageBtnActionPerformed
-        if (lastSelectedFrom == LastSelectedFrom.QueueList) {
-            int curIdx = uxQueueList.getSelectedIndex();
-            if (curIdx + 1 < uxQueueList.getModel().getSize() && curIdx + 1 >= 0) {
-                uxQueueList.setSelectedIndex(curIdx + 1);
-            }//end if there's another index to go to
-        }//end if last selection was from queue list
-        else if (lastSelectedFrom == LastSelectedFrom.OutputTable) {
-            int curIdx = uxOutputTable.getSelectedRow();
-            if (curIdx + 1 < uxOutputTable.getRowCount() && curIdx + 1 >= 0) {
-                uxOutputTable.changeSelection(curIdx + 1, 0, false, false);
-            }//end if there's another index to go to
-        }//end else if last selection was from output table
-    }//GEN-LAST:event_uxNextImageBtnActionPerformed
+    private void uxNextQuadrantBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxNextQuadrantBtnActionPerformed
+        if (currentQuadrant < 3) {currentQuadrant++; changeQuadrant(currentQuadrant);}
+    }//GEN-LAST:event_uxNextQuadrantBtnActionPerformed
 
     /**
      * Figures out where currently selected image is located, finds image before it, then changes selection of displayed image.
      */
-    private void uxPrevImageBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxPrevImageBtnActionPerformed
-        if (lastSelectedFrom == LastSelectedFrom.QueueList) {
-            int curIdx = uxQueueList.getSelectedIndex();
-            if (curIdx - 1 >= 0) {
-                uxQueueList.setSelectedIndex(curIdx - 1);
-            }//end if there's another index to go to
-        }//end if last selection was from queue list
-        else if (lastSelectedFrom == LastSelectedFrom.OutputTable) {
-            int curIdx = uxOutputTable.getSelectedRow();
-            if (curIdx - 1 >= 0) {
-                uxOutputTable.changeSelection(curIdx - 1, 0, false, false);
-            }//end if there's another index to go to
-        }//end else if last selection was from output table
-    }//GEN-LAST:event_uxPrevImageBtnActionPerformed
+    private void uxPrevQuadrantBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxPrevQuadrantBtnActionPerformed
+        if (currentQuadrant > 0) {currentQuadrant--; changeQuadrant(currentQuadrant);}
+    }//GEN-LAST:event_uxPrevQuadrantBtnActionPerformed
+
+    private void changeQuadrant(int quadIdx) {
+        String letter = ((char)(65 + quadIdx)) + "";
+        if (lastSelectedFile == null) {return;}
+        uxImagePropertiesTxt.setText("Image: " + lastSelectedFile.getName() + "\nQuadrant: " + letter + letter);
+        updateImageDisplay(quadrantedIcons[quadIdx]);
+    }
 
     /**
      * Finds which image is currently selected and displayed, 
-     * finds the path of that image, and 
+     * finds the path of that image, and TODO: Fix this function
      * then opens + selects that file in file explorer
      */
     private void uxOpenFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxOpenFileBtnActionPerformed
@@ -880,14 +870,49 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private void uxQueueListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_uxQueueListValueChanged
         if (!evt.getValueIsAdjusting() && uxQueueList.getSelectedIndex() != -1) {
+            File selectedFile = getSelectedFileFromAll(uxQueueList.getSelectedValue());
+            lastSelectedFile = selectedFile;
+
+            DisplayTask dTask = new DisplayTask(selectedFile, this::setupViewWithIcons);
+            dTask.execute();
+            uxImagePropertiesTxt.setText("Image: " + selectedFile.getName() + "\nQuadrant: AA");
+            
             // update the displayed image
-            updateImageDisplay(uxQueueList.getSelectedValue());
+            // updateImageDisplay(uxQueueList.getSelectedValue());
             // update image properties text
-            uxImagePropertiesTxt.setText("Image: " + uxQueueList.getSelectedValue() + "\nSelected From: QueueList[" + uxQueueList.getSelectedIndex() + "]");
+            // uxImagePropertiesTxt.setText("Image: " + uxQueueList.getSelectedValue() + "\nSelected From: QueueList[" + uxQueueList.getSelectedIndex() + "]");
             // update some flags and such
-            lastSelectedFrom = LastSelectedFrom.QueueList;
+            // lastSelectedFrom = LastSelectedFrom.QueueList;
         }//end if we're not in a series of adjustments?
     }//GEN-LAST:event_uxQueueListValueChanged
+
+    public void setupViewWithIcons(ImagePlus[] quadrants) {
+        this.quadrantedIcons = quadrants;
+        if (quadrantedIcons == null) {System.err.println("Couldn't get icon for selected image..."); return;}
+        updateImageDisplay(quadrantedIcons[0]);
+    }
+
+    private void updateImageDisplay(ImagePlus img) {
+        int imgWidth = img.getWidth();
+        int imgHeight = img.getHeight();
+        if (imgWidth > uxImageLabel.getWidth()) {
+            int newImgWidth = (int)((double)uxImageLabel.getWidth() * 0.85);
+            int newImgHeight = newImgWidth * imgHeight / imgWidth;
+            imgWidth = newImgWidth;
+            imgHeight = newImgHeight;
+        }//end if we need to scale down because of width
+        if (imgHeight > uxImageLabel.getHeight()) {
+            int newImgHeight = (int)((double)uxImageLabel.getHeight() * 0.85);
+            int newImgWidth = imgWidth * newImgHeight / imgHeight;
+            imgHeight = newImgHeight;
+            imgWidth = newImgWidth;
+        }//end if we need to scale down because of height
+
+        ImageIcon scaledIcon = new ImageIcon(img.getImage().getScaledInstance(imgWidth, imgHeight, 0));
+
+        uxImageLabel.setIcon(scaledIcon);
+
+    }
 
     /**
      * This method updates the image label with the image which has the specified filename (as from File.getName()).
@@ -1200,12 +1225,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel uxImageLabel;
     private javax.swing.JTextArea uxImagePropertiesTxt;
     private javax.swing.JMenu uxInitMenu;
-    private javax.swing.JButton uxNextImageBtn;
+    private javax.swing.JButton uxNextQuadrantBtn;
     private javax.swing.JButton uxOpenFileBtn;
     private javax.swing.JButton uxOpenOutputFile;
     private javax.swing.JTable uxOutputTable;
     private javax.swing.JTextField uxOverwriteName;
-    private javax.swing.JButton uxPrevImageBtn;
+    private javax.swing.JButton uxPrevQuadrantBtn;
     private javax.swing.JButton uxProcessAllBtn;
     private javax.swing.JList<String> uxQueueList;
     private javax.swing.JMenuItem uxResetScanner;

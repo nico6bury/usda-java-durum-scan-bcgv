@@ -602,9 +602,9 @@
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="uxOpenFileBtn" alignment="0" min="-2" pref="239" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="uxPrevImageBtn" min="-2" max="-2" attributes="0"/>
+                                      <Component id="uxPrevQuadrantBtn" min="-2" pref="145" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="uxNextImageBtn" min="-2" max="-2" attributes="0"/>
+                                      <Component id="uxNextQuadrantBtn" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="uxOpenOutputFile" min="-2" max="-2" attributes="0"/>
@@ -614,7 +614,7 @@
                                   <Component id="jScrollPane3" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="uxImageLabel" pref="335" max="32767" attributes="0"/>
+                              <Component id="uxImageLabel" pref="314" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -628,8 +628,8 @@
                                       <Component id="jScrollPane3" min="-2" pref="162" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="uxPrevImageBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="uxNextImageBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="uxPrevQuadrantBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="uxNextQuadrantBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" max="-2" attributes="0"/>
                                       <Component id="uxOpenFileBtn" min="-2" max="-2" attributes="0"/>
@@ -638,7 +638,7 @@
                                           <Component id="uxOpenOutputFile" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="uxClearOutputBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="0" pref="177" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="174" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="uxImageLabel" max="32767" attributes="0"/>
                               </Group>
@@ -665,7 +665,6 @@
                               </FontInfo>
                             </Property>
                             <Property name="rows" type="int" value="1"/>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[102, 84]"/>
                             </Property>
@@ -673,30 +672,30 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JButton" name="uxPrevImageBtn">
+                    <Component class="javax.swing.JButton" name="uxPrevQuadrantBtn">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                           <FontInfo relative="true">
-                            <Font component="uxPrevImageBtn" property="font" relativeSize="true" size="2"/>
+                            <Font component="uxPrevQuadrantBtn" property="font" relativeSize="true" size="2"/>
                           </FontInfo>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Previous Image"/>
+                        <Property name="text" type="java.lang.String" value="Previous Quadrant"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxPrevImageBtnActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxPrevQuadrantBtnActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="uxNextImageBtn">
+                    <Component class="javax.swing.JButton" name="uxNextQuadrantBtn">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                           <FontInfo relative="true">
-                            <Font component="uxNextImageBtn" property="font" relativeSize="true" size="2"/>
+                            <Font component="uxNextQuadrantBtn" property="font" relativeSize="true" size="2"/>
                           </FontInfo>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Next Image"/>
+                        <Property name="text" type="java.lang.String" value="Next Quadrant"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxNextImageBtnActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxNextQuadrantBtnActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="uxOpenFileBtn">
