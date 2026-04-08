@@ -20,7 +20,7 @@ public class ProcessingConfig implements ConfigStore {
     public int chalklvl1End = 12;
     public int chalklvl2End = 25;
     public int chalklvl3End = 50;
-    public int chalklvl4End = 100;
+    public int chalklvl4End = 101;
 
     public int phase1_threshold_merged_feret_low = 85;
     public int phase1_threshold_merged_feret_high = 105;
