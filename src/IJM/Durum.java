@@ -62,8 +62,9 @@ public class Durum {
 		dir.delete();
 	}//end recursiveDeleteDirectory()
 
-	public static void doProcessing(List<File> imgFiles, Consumer<String> guiUpdater) {
+	public static String[][] doProcessing(List<File> imgFiles, Consumer<String> guiUpdater) {
 		long startTimeTotal = System.currentTimeMillis();
+		String[][] outputTable = new String[imgFiles.size()][6];
 
 		OutputConfig outConf = new OutputConfig();
 		ProcessingConfig procConf = new ProcessingConfig();
@@ -107,7 +108,11 @@ public class Durum {
 			int logSheetRow = 1;
 			int rowsSinceLastNew = 0;
 
+			
+
+			int iii = 0;
 			for (File imgFile : imgFiles) {
+				outputTable[iii][0] = imgFile.getName();
 
 				guiUpdater.accept("\nStarting processing for " + imgFile.getName());
 				long startTime = System.currentTimeMillis();
@@ -159,6 +164,24 @@ public class Durum {
 				
 				guiUpdater.accept("Finished finding chalk value for each kernel in " + imgFile.getName() + " in " + String.format("%.1f", (System.currentTimeMillis() - startTime4) / 1000.) + " seconds.");
 				
+				int[] lvlSums = new int[4];
+				int totalSum = 0;
+
+				// get total amount of seeds plus total per level
+				for (int i = 0; i < chalkCounts.length - 1; i++) {
+					int[] quadCounts = chalkCounts[i];
+					for (int ii = 0; ii < 4 && ii < quadCounts.length; ii++) {
+						lvlSums[ii] += quadCounts[ii];
+						totalSum += quadCounts[ii];
+					}
+				}
+
+				outputTable[iii][1] = totalSum + "";
+				outputTable[iii][2] = String.format("%.1f", ((double)lvlSums[0] / (double)totalSum * 100));
+				outputTable[iii][3] = String.format("%.1f", ((double)lvlSums[1] / (double)totalSum * 100));
+				outputTable[iii][4] = String.format("%.1f", ((double)lvlSums[2] / (double)totalSum * 100));
+				outputTable[iii][5] = String.format("%.1f", ((double)lvlSums[3] / (double)totalSum * 100));
+
 				guiUpdater.accept("Writing to excel");
 				// major function call
 				Worksheet ws = wb.newWorksheet(imgFile.getName() + "-sum");
@@ -174,13 +197,17 @@ public class Durum {
 				
 				guiUpdater.accept("Finished all processing for " + imgFile.getName() + " in " + (System.currentTimeMillis() - startTime) / 1000. + " seconds.\n");
 				IJ.runMacro("close(\"*\");");
-			}//end processing each selected image file
 
+				iii++;
+			}//end processing each selected image file
 		} catch (IOException ioe) {
 				ioe.printStackTrace();
+				return null;
 		}//end trying to do stuff and catching IOExceptions
 
 		guiUpdater.accept("\n\nFinished processing for all images after " + (System.currentTimeMillis() - startTimeTotal) / 1000. + " seconds.");
+
+		return outputTable;
 	}//end method doProcessing()
 
 	protected static void logAndConfigSheets(Worksheet log, Worksheet configs, OutputConfig outConf, ProcessingConfig procConf) {

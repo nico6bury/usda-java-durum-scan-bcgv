@@ -16,6 +16,7 @@ public class IJTask extends SwingWorker<SimpleResult<String>,String> {
     public List<File> imageQueue;
     public PrintStream processPrintStream;
     public Consumer<SimpleResult<String>> postProcessConsumer;
+    public String[][] outputTable;
 
     /**
      * Make sure to set imageQueue and ijProcess props before calling this.
@@ -23,7 +24,7 @@ public class IJTask extends SwingWorker<SimpleResult<String>,String> {
     @Override
     protected SimpleResult<String> doInBackground() throws Exception {
         AnalyzeParticles.originalPrintStream = processPrintStream;
-        Durum.doProcessing(imageQueue, this::publish);
+        this.outputTable = Durum.doProcessing(imageQueue, this::publish);
         return new SimpleResult<String>("null");
     }//end doInBackground()
 
