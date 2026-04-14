@@ -214,10 +214,10 @@ public class Durum {
 		log.setZoom(200);
 			
 		// styling
-		log.range(0,0,15,15).style().horizontalAlignment("center").set();
-		log.range(1,5,15,15).style().format("0.0%").set();
-		log.range(1,1,15,1).style().format("m/d/yyyy").set();
-		log.range(1,2,15,2).style().format("h:mm:ss AM/PM").set();
+		log.range(0,0,150,15).style().horizontalAlignment("center").set();
+		log.range(1,5,150,15).style().format("0.0%").set();
+		log.range(1,1,150,1).style().format("m/d/yyyy").set();
+		log.range(1,2,150,2).style().format("h:mm:ss AM/PM").set();
 		
 		log.width(1,11);
 		log.width(2,11);
