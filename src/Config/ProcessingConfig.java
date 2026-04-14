@@ -87,6 +87,10 @@ public class ProcessingConfig implements ConfigStore {
     public String chalkChalkMeasurements = "area centroid perimeter fit shape redirect=None decimal=2";
 	public String chalkChalkParam = "size=20-10000 circularity=0.1-1.00 show=[Overlay Masks] display";
 
+    public String delete_tapeCOMMENT = "If this is set to true, then will attempt to remove tape in the upper right " +
+    "\n# corner of the image. Specifically, a rectangle reaching from x 2223 to the right of the image and from y 0 to y 300.";
+    public boolean delete_tape = true;
+
     public SimpleResult<String> readConfig() {
         return ConfigScribe.readConfig(this);
     }//end readConfig()
@@ -101,7 +105,11 @@ public class ProcessingConfig implements ConfigStore {
     @Override
     public List<String> getConfigHeader() {
         List<String> lines = new ArrayList<String>();
-        lines.add("TODO: PLACEHOLDER HEADER");
+        lines.add("This is one of the configuration files for the DurumScan program, written by Nicholas Sixbury. ");
+        lines.add("Since this is the processing-settings file, you can find settings related to the image processing ");
+        lines.add("done by the program, all of which CAN affect the percent chalk or chalk level summary output from");
+        lines.add("the program. For settings related to how the output is formatted, check out the output-settings file.");
+        lines.add("");
         lines.add("In this file, lines not parsed as variable serialization are automatically ignored.");
         lines.add("Because of this, any line starting with \'#\' will automatically be interpretted as");
         lines.add("a comment. Any comments will be untouched in the config file, so feel free to add");
@@ -110,6 +118,26 @@ public class ProcessingConfig implements ConfigStore {
         lines.add("If this config file is ever deleted, then it should be re-generated on program");
         lines.add("startup. All parameters will be set to default, and all default comments will be");
         lines.add("added to the new config file, including this header comment.");
+        lines.add("");
+        lines.add("In this file, there are a few collections of settings that bear extra explanation:");
+        lines.add("Within the program, there are a number of times in which images will be thresholded based ");
+        lines.add("on color. Pixels outside the color threshold are removed from the image before particle analysis, ");
+        lines.add("in order to aid in segmentation of the kernels from each other and from the background. ");
+        lines.add("Each threshold is split up into several separate settings in this file. Each threshold will ");
+        lines.add("have Min, Max, and Pass for either H, S, and B OR R, G, and B, following either the HSB or ");
+        lines.add(" RGB color schemes. Each threshold also has a setting attached, called \"flipThreshold\", which ");
+        lines.add("essentially flips the entire threshold around by saving only what's outside the threshold ");
+        lines.add("instead of what's inside the threshold. As for the \"Pass\" settings, if these are set to true");
+        lines.add("for a particular part of the color scale, then values between the mind and max will be ");
+        lines.add("considered inside the threshold, whereas setting pass to false for that part of the scale ");
+        lines.add("will have the program consider values outside of the min and max to be inside the threshold. ");
+        lines.add("The names of each of these threshold-variables has been standardized to make them easy to ");
+        lines.add("distinguish, as they all contain the string \"Thresh\", and all settings which belong to");
+        lines.add("the same threshold will have the same prefix, such as phase1Thresh1 or chalkChalkThresh.");
+        lines.add("It's important to be very careful when changing these settings, as even changing them ");
+        lines.add("a little bit could have a big impact on chalk and kernel detection. ");
+        lines.add("It's also important to note that regardless of the norm for RGB or HSB, each section");
+        lines.add("of the scale is always on a scale of 0-255, since that's how imagej does things.");
         lines.add("");
         return lines;
     }//end getConfigHeader()

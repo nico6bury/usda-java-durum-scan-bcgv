@@ -78,12 +78,12 @@ public class KernelGrid {
 	 * Constructs a KernelGrid, setting up certain variables and prepping things for later processing.
 	 * @param imgFile The image file to process
 	 */
-	public KernelGrid(File imgFile, OutputConfig outConf) {
+	public KernelGrid(File imgFile, ProcessingConfig procConf) {
 		// open and save reference to the image, make sure it's flipped and rotated
 		this.originalImageFile = imgFile;
 		System.out.println("Adding file " + imgFile.getName() + " to a kernel grid for processing.");
 		ImagePlus image = IJ.openImage(imgFile.getAbsolutePath());
-		if (outConf.delete_tape) {
+		if (procConf.delete_tape) {
 			deleteTape(image);
 		}//end if we should delete the tape in the corner of the image
 		ImageProcessor prc = image.getProcessor();
