@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -128,23 +130,31 @@ public class MainWindow extends javax.swing.JFrame {
         tb.append("Process image to estimate %chalk");
         uxTitleBlockTxt.setText(tb.toString());
 
+        Consumer<ImagePlus[]> setupViewConsumer = this::setupViewWithIcons;
         // configure the table model
-        // ListSelectionListener lsl = new ListSelectionListener() {
-        //     @Override
-        //     public void valueChanged(ListSelectionEvent e) {
-        //         if (!e.getValueIsAdjusting()) {
-        //             int idx = uxOutputTable.getSelectedRow();
-        //             String selected_filename = uxOutputTable.getModel().getValueAt(idx, 0).toString();
-        //             // call method to update image label
-        //             updateImageDisplay(selected_filename);
-        //             // update properties display
-        //             uxImagePropertiesTxt.setText("Image: " + selected_filename + "\nSelected From: OutputTable[" + idx + "]");
-        //             // update flags and such
-        //             lastSelectedFrom = LastSelectedFrom.OutputTable;
-        //         }//end if the value is done adjusting
-        //     }//end valueChanged(e)
-        // };
-        // uxOutputTable.getSelectionModel().addListSelectionListener(lsl);
+        ListSelectionListener lsl = new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int idx = uxOutputTable.getSelectedRow();
+                    String selected_filename = uxOutputTable.getModel().getValueAt(idx, 0).toString();
+                    File selectedFile = getSelectedFileFromAll(selected_filename);
+                    lastSelectedFile = selectedFile;
+                    
+                    DisplayTask dTask = new DisplayTask(selectedFile, setupViewConsumer);
+                    dTask.execute();
+                    uxImagePropertiesTxt.setText("Image: " + selectedFile.getName() + "\nQuadrant: AA");
+                    // call method to update image label
+                    // updateImageDisplay(selected_filename);
+                    // updateImageDisplay(null);
+                    // update properties display
+                    // uxImagePropertiesTxt.setText("Image: " + selected_filename + "\nSelected From: OutputTable[" + idx + "]");
+                    // update flags and such
+                    lastSelectedFrom = LastSelectedFrom.OutputTable;
+                }//end if the value is done adjusting
+            }//end valueChanged(e)
+        };
+        uxOutputTable.getSelectionModel().addListSelectionListener(lsl);
 
         // mess with the jtable so that column text is centered
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -882,7 +892,7 @@ public class MainWindow extends javax.swing.JFrame {
             // update image properties text
             // uxImagePropertiesTxt.setText("Image: " + uxQueueList.getSelectedValue() + "\nSelected From: QueueList[" + uxQueueList.getSelectedIndex() + "]");
             // update some flags and such
-            // lastSelectedFrom = LastSelectedFrom.QueueList;
+            lastSelectedFrom = LastSelectedFrom.QueueList;
         }//end if we're not in a series of adjustments?
     }//GEN-LAST:event_uxQueueListValueChanged
 
@@ -911,25 +921,24 @@ public class MainWindow extends javax.swing.JFrame {
         ImageIcon scaledIcon = new ImageIcon(img.getImage().getScaledInstance(imgWidth, imgHeight, 0));
 
         uxImageLabel.setIcon(scaledIcon);
-
     }
 
-    /**
-     * This method updates the image label with the image which has the specified filename (as from File.getName()).
-     * This is somewhat awkward, as we have to search through a list of all files to find the one with a matching name.
-     * It's also possible that this could cause problems if two images are loaded with the same filename (but different directories).
-     * @param filename The filename (as from File.getName()) of the image to display.
-     */
-    private void updateImageDisplay(String filename) {
-        // pick throug the list of files that have been loaded into queue to find the one that matches the selected file name
-        File imageMatch = getSelectedFileFromAll(filename);
-        // edge case validation
-        if (imageMatch == null) {JOptionPane.showMessageDialog(this, "Could not find matching file for selection."); return;}
-        // display the image in the label
-        ImageIcon icon = scaleImageToIcon(imageMatch);
-        if (icon == null) {JOptionPane.showMessageDialog(this, "Could not read selected image to buffer."); return;}
-        uxImageLabel.setIcon(icon);
-    }//end updateImageDisplay(filename)
+    // /**
+    //  * This method updates the image label with the image which has the specified filename (as from File.getName()).
+    //  * This is somewhat awkward, as we have to search through a list of all files to find the one with a matching name.
+    //  * It's also possible that this could cause problems if two images are loaded with the same filename (but different directories).
+    //  * @param filename The filename (as from File.getName()) of the image to display.
+    //  */
+    // private void updateImageDisplay(String filename) {
+    //     // pick throug the list of files that have been loaded into queue to find the one that matches the selected file name
+    //     File imageMatch = getSelectedFileFromAll(filename);
+    //     // edge case validation
+    //     if (imageMatch == null) {JOptionPane.showMessageDialog(this, "Could not find matching file for selection."); return;}
+    //     // display the image in the label
+    //     ImageIcon icon = scaleImageToIcon(imageMatch);
+    //     if (icon == null) {JOptionPane.showMessageDialog(this, "Could not read selected image to buffer."); return;}
+    //     uxImageLabel.setIcon(icon);
+    // }//end updateImageDisplay(filename)
 
     /**
      * A helper method written for uxQueueListValueChange(). This method loops through all 
@@ -948,41 +957,41 @@ public class MainWindow extends javax.swing.JFrame {
         return imageMatch;
     }//end getSelectedFileFromQueue()
 
-    /**
-     * This method was written as a helper method for uxQueueListValueChanged(). This method reads an image File into memory as
-     * a BufferedImage, and then converts that image into an Icon which has been scaled down to fit in the window. 
-     * @param imageFile The File representing an image file to be opened and displayed.
-     * @return Returns an ImageIcon if the file is found. Otherwise, returns null if we can't open the image.
-     */
-    private ImageIcon scaleImageToIcon(File imageFile) {
-        BufferedImage buf_img = IJ.openImage(imageFile.getAbsolutePath()).getBufferedImage();
-        if (buf_img == null) {return null;}
-        // It would maybe be good to improve image scaling at some point
-        /*
-         * It would maybe be good to improve image scaling at some point, as currently, 
-         * in order to resize the image, you have to select a different file, which is pretty jank.
-         * 
-         * The reason we scale the image to less than the size of the label container is that if you set the iamge to the same
-         * width and height as that of the container, then the image will be slightly larger than the label, so every time a new
-         * image is selected, the size of the label will just continually grow in size. But, if you set the size to 95% or 99%
-         * the size of the label, then that doesn't happen for some reason.
-         */
-        int imgWidth = buf_img.getWidth();
-        int imgHeight = buf_img.getHeight();
-        if (imgWidth > uxImageLabel.getWidth()) {
-            int newImgWidth = (int)((double)uxImageLabel.getWidth() * 0.85);
-            int newImgHeight = newImgWidth * imgHeight / imgWidth;
-            imgWidth = newImgWidth;
-            imgHeight = newImgHeight;
-        }//end if we need to scale down because of width
-        if (imgHeight > uxImageLabel.getHeight()) {
-            int newImgHeight = (int)((double)uxImageLabel.getHeight() * 0.85);
-            int newImgWidth = imgWidth * newImgHeight / imgHeight;
-            imgHeight = newImgHeight;
-            imgWidth = newImgWidth;
-        }//end if we need to scale down because of height
-        return new ImageIcon(new ImageIcon(buf_img).getImage().getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT));
-    }//end scaleImageToIcon(imageFile)
+    // /**
+    //  * This method was written as a helper method for uxQueueListValueChanged(). This method reads an image File into memory as
+    //  * a BufferedImage, and then converts that image into an Icon which has been scaled down to fit in the window. 
+    //  * @param imageFile The File representing an image file to be opened and displayed.
+    //  * @return Returns an ImageIcon if the file is found. Otherwise, returns null if we can't open the image.
+    //  */
+    // private ImageIcon scaleImageToIcon(File imageFile) {
+    //     BufferedImage buf_img = IJ.openImage(imageFile.getAbsolutePath()).getBufferedImage();
+    //     if (buf_img == null) {return null;}
+    //     // It would maybe be good to improve image scaling at some point
+    //     /*
+    //      * It would maybe be good to improve image scaling at some point, as currently, 
+    //      * in order to resize the image, you have to select a different file, which is pretty jank.
+    //      * 
+    //      * The reason we scale the image to less than the size of the label container is that if you set the iamge to the same
+    //      * width and height as that of the container, then the image will be slightly larger than the label, so every time a new
+    //      * image is selected, the size of the label will just continually grow in size. But, if you set the size to 95% or 99%
+    //      * the size of the label, then that doesn't happen for some reason.
+    //      */
+    //     int imgWidth = buf_img.getWidth();
+    //     int imgHeight = buf_img.getHeight();
+    //     if (imgWidth > uxImageLabel.getWidth()) {
+    //         int newImgWidth = (int)((double)uxImageLabel.getWidth() * 0.85);
+    //         int newImgHeight = newImgWidth * imgHeight / imgWidth;
+    //         imgWidth = newImgWidth;
+    //         imgHeight = newImgHeight;
+    //     }//end if we need to scale down because of width
+    //     if (imgHeight > uxImageLabel.getHeight()) {
+    //         int newImgHeight = (int)((double)uxImageLabel.getHeight() * 0.85);
+    //         int newImgWidth = imgWidth * newImgHeight / imgHeight;
+    //         imgHeight = newImgHeight;
+    //         imgWidth = newImgWidth;
+    //     }//end if we need to scale down because of height
+    //     return new ImageIcon(new ImageIcon(buf_img).getImage().getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT));
+    // }//end scaleImageToIcon(imageFile)
 
     /**
      * Updates the output table with the provided results from image processing.
@@ -1017,7 +1026,7 @@ public class MainWindow extends javax.swing.JFrame {
         String jar_location;
         try {
             // Get path of output folder
-            jar_location = new File(IJProcess.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString();
+            jar_location = new File(MainWindow.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().toString();
             String output_folder_storage = jar_location + File.separator + Constants.IMAGEJ_OUTPUT_FOLDER_NAME;
             Runtime.getRuntime().exec("explorer.exe " + output_folder_storage);
         } catch (Exception e) {

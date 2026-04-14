@@ -14,6 +14,6 @@ public class Constants {
     public static String PEOPLE = "N_Sixbury/W_Rust/D_Brabec";
     public static String PROGRAM_NAME = "Durum Scan & Analysis";
     public static String VERSION = "v. 0.1.0";
-    public static String SCANNED_IMAGES_FOLDER_NAME = "scanned-images";
-    public static String IMAGEJ_OUTPUT_FOLDER_NAME = "output-folder";
+    public static String SCANNED_IMAGES_FOLDER_NAME = "imgs";
+    public static String IMAGEJ_OUTPUT_FOLDER_NAME = "data";
 }//end class Constants
