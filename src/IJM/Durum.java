@@ -64,7 +64,7 @@ public class Durum {
 
 	public static String[][] doProcessing(List<File> imgFiles, Consumer<String> guiUpdater) {
 		long startTimeTotal = System.currentTimeMillis();
-		String[][] outputTable = new String[imgFiles.size()][6];
+		String[][] outputTable = new String[imgFiles.size() * 2][6];
 
 		OutputConfig outConf = new OutputConfig();
 		ProcessingConfig procConf = new ProcessingConfig();
@@ -181,6 +181,8 @@ public class Durum {
 				outputTable[iii][3] = String.format("%.1f", ((double)lvlSums[1] / (double)totalSum * 100));
 				outputTable[iii][4] = String.format("%.1f", ((double)lvlSums[2] / (double)totalSum * 100));
 				outputTable[iii][5] = String.format("%.1f", ((double)lvlSums[3] / (double)totalSum * 100));
+
+				iii++;
 
 				guiUpdater.accept("Writing to excel");
 				// major function call

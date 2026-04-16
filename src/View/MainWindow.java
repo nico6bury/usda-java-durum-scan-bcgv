@@ -137,20 +137,22 @@ public class MainWindow extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int idx = uxOutputTable.getSelectedRow();
-                    String selected_filename = uxOutputTable.getModel().getValueAt(idx, 0).toString();
-                    File selectedFile = getSelectedFileFromAll(selected_filename);
-                    lastSelectedFile = selectedFile;
-                    
-                    DisplayTask dTask = new DisplayTask(selectedFile, setupViewConsumer);
-                    dTask.execute();
-                    uxImagePropertiesTxt.setText("Image: " + selectedFile.getName() + "\nQuadrant: AA");
-                    // call method to update image label
-                    // updateImageDisplay(selected_filename);
-                    // updateImageDisplay(null);
-                    // update properties display
-                    // uxImagePropertiesTxt.setText("Image: " + selected_filename + "\nSelected From: OutputTable[" + idx + "]");
-                    // update flags and such
-                    lastSelectedFrom = LastSelectedFrom.OutputTable;
+                    try {
+                        String selected_filename = uxOutputTable.getModel().getValueAt(idx, 0).toString();
+                        File selectedFile = getSelectedFileFromAll(selected_filename);
+                        lastSelectedFile = selectedFile;
+                        
+                        DisplayTask dTask = new DisplayTask(selectedFile, setupViewConsumer);
+                        dTask.execute();
+                        uxImagePropertiesTxt.setText("Image: " + selectedFile.getName() + "\nQuadrant: AA");
+                        // call method to update image label
+                        // updateImageDisplay(selected_filename);
+                        // updateImageDisplay(null);
+                        // update properties display
+                        // uxImagePropertiesTxt.setText("Image: " + selected_filename + "\nSelected From: OutputTable[" + idx + "]");
+                        // update flags and such
+                        lastSelectedFrom = LastSelectedFrom.OutputTable;
+                    } catch (Exception ee) {}
                 }//end if the value is done adjusting
             }//end valueChanged(e)
         };
