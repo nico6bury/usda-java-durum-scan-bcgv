@@ -249,7 +249,7 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("USDA-ARS-FlourScan-Java");
+        setTitle("DurumScan");
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane1.setDividerLocation(690);
