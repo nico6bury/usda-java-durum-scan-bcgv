@@ -144,6 +144,7 @@ public class MainWindow extends javax.swing.JFrame {
                         
                         DisplayTask dTask = new DisplayTask(selectedFile, setupViewConsumer);
                         dTask.execute();
+                        currentQuadrant = 0;
                         uxImagePropertiesTxt.setText("Image: " + selectedFile.getName() + "\nQuadrant: AA");
                         // call method to update image label
                         // updateImageDisplay(selected_filename);
