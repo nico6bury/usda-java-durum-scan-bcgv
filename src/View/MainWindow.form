@@ -29,6 +29,9 @@
       </Properties>
     </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="jMenuBar1.setVisible(false);"/>
+      </AuxValues>
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="uxInitMenu">
           <Properties>
@@ -302,7 +305,7 @@
                             <Property name="columns" type="int" value="20"/>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                               <FontInfo relative="true">
-                                <Font component="uxStatusTxt" property="font" relativeSize="true" size="0"/>
+                                <Font component="uxStatusTxt" property="font" relativeSize="true" size="2"/>
                               </FontInfo>
                             </Property>
                             <Property name="rows" type="int" value="5"/>
@@ -419,7 +422,7 @@
                             <Property name="columns" type="int" value="20"/>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                               <FontInfo relative="true">
-                                <Font component="uxTitleBlockTxt" property="font" relativeSize="true" size="0"/>
+                                <Font component="uxTitleBlockTxt" property="font" relativeSize="true" size="2"/>
                               </FontInfo>
                             </Property>
                             <Property name="rows" type="int" value="5"/>
@@ -802,7 +805,7 @@
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                               <FontInfo relative="true">
-                                <Font component="uxOutputTable" property="font" relativeSize="true" size="0"/>
+                                <Font component="uxOutputTable" property="font" relativeSize="true" size="2"/>
                               </FontInfo>
                             </Property>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
