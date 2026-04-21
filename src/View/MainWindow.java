@@ -125,9 +125,9 @@ public class MainWindow extends javax.swing.JFrame {
         tb.append("\t");
         tb.append(Constants.PEOPLE);
         tb.append("\n");
-        tb.append("To process images from EPSON v850 Scanner\n");
-        tb.append("To collect transmissive images of durum samples in a big clear-ish grid\n");
-        tb.append("Process image to estimate %chalk");
+        tb.append("collect images of durum kernels from EPSON v850 Scanner using transmission lighting\n");
+        tb.append("15g of durum kernels loaded to USDA seed tray\n");
+        tb.append("This software processes images of durum seeds and summarizes %chalkiness");
         uxTitleBlockTxt.setText(tb.toString());
 
         Consumer<ImagePlus[]> setupViewConsumer = this::setupViewWithIcons;
