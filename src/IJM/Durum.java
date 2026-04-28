@@ -160,6 +160,12 @@ public class Durum {
 				// major function call
 				Worksheet sk = wb.newWorksheet(imgFile.getName() + "-singles");
 				sk.range(0,0,500,15).style().horizontalAlignment("center").set();
+				sk.range(0,3,500,3).style().format("0.0%").set();
+				sk.range(0,1,500,2).style().format("0").set();
+				sk.width(1, 8);
+				sk.width(2, 8);
+				sk.width(3, 8);
+				sk.width(4, 8);
 				int[][] chalkCounts = kernGrid.getChalk(outConf, procConf, sk);
 				
 				guiUpdater.accept("Finished finding chalk value for each kernel in " + imgFile.getName() + " in " + String.format("%.1f", (System.currentTimeMillis() - startTime4) / 1000.) + " seconds.");

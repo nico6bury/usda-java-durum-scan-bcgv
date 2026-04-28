@@ -699,9 +699,12 @@ public class KernelGrid {
 
 		// headers for single-kernel-excel-sheet
 		sk.value(0, 0, "position");
-		sk.value(0,1,"chlk-level");
-		sk.value(0,2,"X");
-		sk.value(0,3,"Y");
+		sk.value(0, 1, "kern-area");
+		sk.value(0, 2, "chlk-area");
+		sk.value(0, 3, "chlk-perc");
+		sk.value(0,4,"chlk-level");
+		sk.value(0,5,"X");
+		sk.value(0,6,"Y");
 
 		for (int i = 0; i < singletons.size(); i++) {			
 			// kernel results
@@ -761,9 +764,12 @@ public class KernelGrid {
 			
 			// write to single-kernel-specific excel sheet
 			sk.value(i+1, 0, singletons.get(i).getPositionString());
-			sk.value(i+1, 1, lvlIndex + 1);
-			sk.value(i+1, 2, singletons.get(i).x);
-			sk.value(i+1, 3, singletons.get(i).y);
+			sk.value(i+1, 1, String.format("%.0f", kernelArea));
+			sk.value(i+1, 2, String.format("%.0f", chalkArea));
+			sk.value(i+1, 3, chalkPercent / 100); // formatting set elsewhere on the excel-level
+			sk.value(i+1, 4, lvlIndex + 1);
+			sk.value(i+1, 5, singletons.get(i).x);
+			sk.value(i+1, 6, singletons.get(i).y);
 
 			rt.reset();
 
