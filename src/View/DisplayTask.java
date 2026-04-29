@@ -1,10 +1,8 @@
 package View;
 
-import java.awt.Image;
 import java.io.File;
 import java.util.function.Consumer;
 
-import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
 
 import ij.IJ;
