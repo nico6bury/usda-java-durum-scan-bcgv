@@ -698,10 +698,10 @@ public class KernelGrid {
 		chalkImgBase.mkdir();
 
 		// headers for single-kernel-excel-sheet
-		sk.value(0, 0, "position");
-		sk.value(0, 1, "kern-area");
-		sk.value(0, 2, "chlk-area");
-		sk.value(0, 3, "chlk-perc");
+		sk.value(0,0, "position");
+		sk.value(0,1, "kern-area");
+		sk.value(0,2, "chlk-area");
+		sk.value(0,3, "chlk-perc");
 		sk.value(0,4,"chlk-level");
 		sk.value(0,5,"X");
 		sk.value(0,6,"Y");
